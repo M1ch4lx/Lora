@@ -33,5 +33,3 @@ function_definition : DEF ID '(' parameters ')' BLOCK_START statement ;
 parameters : ID (COMMA ID)* ;
 
 return_statement : RETURN expression ';' ;
-
-print_statement : PRINT '(' expression ')' ';' ;
