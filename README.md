@@ -4,7 +4,7 @@
 ```
 IF : 'if' ;
 WHILE : 'while' ;
-DEF : 'def' ;
+DEF : 'function' ;
 RETURN : 'return' ;
 BLOCK_START : ':' ;
 ELIF : 'elif';
