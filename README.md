@@ -51,7 +51,6 @@ statement : simple_statement
 simple_statement : assignment_statement
                  | expression_statement
                  | return_statement
-                 | print_statement
                  ;
 
 assignment_statement : ID '=' expression ';' ;
