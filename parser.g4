@@ -18,7 +18,12 @@ assignment_statement : ID '=' expression ';' ;
 
 expression_statement : expression ';' ;
 
+tuple : expression (COMMA expression)*;
+
+function_call : ID '(' tuple ')';
+
 expression : ID
+           | function_call
            | INT |
            | '(' expression ')'
            | expression op=('*' | '/' | '+' | '-' | '==' | '!=' | '<' | '<=' | '>' | '>=' ) expression
@@ -33,3 +38,5 @@ function_definition : DEF ID '(' parameters ')' BLOCK_START statement ;
 parameters : ID (COMMA ID)* ;
 
 return_statement : RETURN expression ';' ;
+
+print_statement : PRINT '(' expression ')' ';' ;
