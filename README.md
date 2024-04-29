@@ -6,7 +6,6 @@ IF : 'if' ;
 WHILE : 'while' ;
 DEF : 'def' ;
 RETURN : 'return' ;
-PRINT : 'print' ;
 BLOCK_START : ':' ;
 ELIF : 'elif';
 ELSE : 'else';
