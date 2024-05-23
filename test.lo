@@ -27,3 +27,6 @@ function y() {
     return 2;
 }
 
+function do_smth(a: Integer, b) {
+    return {product: a * b, sum: a + b};
+}
