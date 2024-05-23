@@ -3,7 +3,7 @@ import os
 import tkinter as tk
 from PIL import Image, ImageTk
 
-class LoraAnimationPlayer:
+class LoraVideoPlayer:
     def __init__(self, root):
         self.root = root
         self.root.title("Video Player")
@@ -18,15 +18,19 @@ class LoraAnimationPlayer:
 
         # Create a listbox to display MP4 files
         self.listbox = tk.Listbox(self.frame, yscrollcommand=self.scrollbar.set, selectmode=tk.SINGLE)
-        self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.listbox.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         self.scrollbar.config(command=self.listbox.yview)
 
         # Bind the listbox selection event
         self.listbox.bind("<<ListboxSelect>>", self.on_select)
 
+        # Create a frame for the canvas
+        self.canvas_frame = tk.Frame(root)
+        self.canvas_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+
         # Create a canvas to display the video frames
-        self.canvas = tk.Canvas(root, width=640, height=480)
-        self.canvas.pack(side=tk.RIGHT)
+        self.canvas = tk.Canvas(self.canvas_frame, width=640, height=480)
+        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         self.video_path = ""
         self.cap = None
@@ -114,6 +118,6 @@ class LoraAnimationPlayer:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    player = LoraAnimationPlayer(root)
+    player = LoraVideoPlayer(root)
     root.protocol("WM_DELETE_WINDOW", player.on_closing)
     root.mainloop()
