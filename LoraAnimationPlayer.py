@@ -8,50 +8,40 @@ class LoraVideoPlayer:
         self.root = root
         self.root.title("Video Player")
 
-        # Create a frame for the listbox and scrollbar
         self.frame = tk.Frame(root)
         self.frame.pack(side=tk.LEFT, fill=tk.Y)
 
-        # Create a scrollbar
         self.scrollbar = tk.Scrollbar(self.frame, orient=tk.VERTICAL)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Create a listbox to display MP4 files
         self.listbox = tk.Listbox(self.frame, yscrollcommand=self.scrollbar.set, selectmode=tk.SINGLE)
         self.listbox.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         self.scrollbar.config(command=self.listbox.yview)
 
-        # Bind the listbox selection event
         self.listbox.bind("<<ListboxSelect>>", self.on_select)
 
-        # Create a frame for the canvas
         self.canvas_frame = tk.Frame(root)
         self.canvas_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
-        # Create a canvas to display the video frames
         self.canvas = tk.Canvas(self.canvas_frame, width=640, height=480)
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         self.video_path = ""
         self.cap = None
-        self.delay = 15  # Delay in ms between frames
+        self.delay = 15
         self.frame = None
         self.running = False
 
-        # Dictionary to store filenames and their full paths
         self.file_paths = {}
 
-        # Initial scan and populate MP4 files
         self.populate_file_list()
 
-        # Periodically check for new files
         self.check_interval = 5000  # 5 seconds
         self.check_for_new_files()
 
     def populate_file_list(self):
         current_directory = os.getcwd()
         for root, dirs, files in os.walk(current_directory):
-            # Exclude directories named 'partial_movie_files'
             dirs[:] = [d for d in dirs if d != 'partial_movie_files']
             for file in files:
                 if file.endswith(".mp4"):
@@ -66,7 +56,6 @@ class LoraVideoPlayer:
         current_files = {}
         current_directory = os.getcwd()
         for root, dirs, files in os.walk(current_directory):
-            # Exclude directories named 'partial_movie_files'
             dirs[:] = [d for d in dirs if d != 'partial_movie_files']
             for file in files:
                 if file.endswith(".mp4"):
