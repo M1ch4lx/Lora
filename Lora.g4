@@ -72,10 +72,6 @@ tuple : expression (COMMA expression)*;
 
 function_call : ID LPAREN tuple? RPAREN ;
 
-arithmetic_operator : PLUS | MINUS | MULT | DIV ;
-
-logical_operator : EQ | NEQ | LT | LTE | GT | GTE | AND | OR | NOT;
-
 index_operator : LSQUARE expression (COMMA expression)* RSQUARE ;
 
 array : LSQUARE (expression (COMMA expression)*)? RSQUARE ;
@@ -92,10 +88,11 @@ expression :
     object |
     variable_reference |
     function_call |
-    expression logical_operator expression |
-    expression arithmetic_operator expression |
     expression index_operator |
     expression attribute_operator |
+    expression op=(MULT | DIV) expression |
+    expression op=(PLUS | MINUS) expression |
+    expression op=(EQ | NEQ | LT | LTE | GT | GTE | AND | OR | NOT) expression |
     LPAREN expression RPAREN ;
 
 typed_assignment : typed_variable ASSIGN expression ;
@@ -118,7 +115,7 @@ for_loop_statement : FOR LPAREN ID IN expression RPAREN BLOCK_START base_stateme
 
 if_statement : IF LPAREN expression RPAREN BLOCK_START base_statement+ BLOCK_END else_statement? ;
 
-else_statement : ELSE BLOCK_START base_statement BLOCK_END ;
+else_statement : ELSE BLOCK_START base_statement+ BLOCK_END ;
 
 simple_statement :
     typed_assignment |

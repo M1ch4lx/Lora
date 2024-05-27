@@ -1,5 +1,9 @@
 .antlr
+.idea
 __pycache__
 *.interp
 *.tokens
+LoraLexer.py
+LoraParser.py
 LoraListener.py
+LoraVisitor.py
