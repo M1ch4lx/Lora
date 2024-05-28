@@ -4,16 +4,22 @@ from Operator import Operator
 from Variable import *
 from Object import *
 
+
 class Lora:
     def __init__(self):
-        self.functions_set = FunctionsSet()
-        self.current_context = Context()
-        self.expression_stack = []
+        self.functions_set: FunctionsSet = FunctionsSet()
+        self.current_context: Context = Context()
+        self.expression_stack: list = []
 
     def swap_context(self, new_context):
         current_context = self.current_context
         self.current_context = new_context
         return current_context
+
+    def swap_expression_stack(self, new_expression_stack):
+        current_expression_stack = self.expression_stack
+        self.expression_stack = new_expression_stack
+        return current_expression_stack
 
     def get_variable(self, name):
         return self.current_context.find_variable(name)
@@ -95,8 +101,25 @@ class Lora:
 
         return True
 
+    def expression_stack_empty(self):
+        return len(self.expression_stack) == 0
+
+    def expression_result(self):
+        if len(self.expression_stack) == 0:
+            raise Exception("There is no expression result")
+
+        if len(self.expression_stack) > 1:
+            raise Exception("Expression not yet evaluated or invalid expression stack state")
+
+        return self.expression_stack[0]
+
     def evaluate_expression(self):
         while self.evaluate_next_operator():
             pass
 
-        return self.expression_stack[0]
+        result = self.expression_stack[0]
+
+        if isinstance(result, Variable):
+            result = result.object
+
+        return result

@@ -1,22 +1,26 @@
 class FunctionArgument:
-    def __init__(self, index, name, type):
+    def __init__(self, index, name, type=None):
         self.name = name
         self.type = type
         self.index = index
 
 
+def get_function_id(name, args_count):
+    return name + str(args_count)
+
+
 class FunctionSignature:
-    def __init__(self, name, args):
+    def __init__(self, name, args: list[FunctionArgument]):
         self.name = name
         self.args_count = len(args)
         self.args = args
-        self.id = self.name + str(self.args_count)
+        self.id = get_function_id(self.name, self.args_count)
 
 
 class Function:
-    def __init__(self, signature, is_built_in, parser_context):
+    def __init__(self, signature: FunctionSignature, is_built_in: bool, code_block):
         self.signature = signature
-        self.parser_context = parser_context
+        self.code_block = code_block
         self.built_in = is_built_in
 
 
@@ -27,8 +31,9 @@ class FunctionsSet:
     def add_function(self, function):
         self.functions[function.signature.id] = function
 
-    def function_exists(self, signature):
-        return signature.id in self.functions
+    def function_exists(self, function_id):
+        return function_id in self.functions
 
-    def find_function(self, signature):
-        return self.functions.get(signature.id)
+    def find_function(self, function_id) -> Function:
+        return self.functions.get(function_id)
+

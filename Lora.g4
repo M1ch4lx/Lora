@@ -105,17 +105,19 @@ function_parameter :
 
 function_parameters_list : LPAREN ( function_parameter (COMMA function_parameter)* )? RPAREN ;
 
-function_declaration : FUNCTION ID function_parameters_list (COLON ID)? BLOCK_START base_statement+ BLOCK_END ;
+function_declaration : FUNCTION ID function_parameters_list code_block ;
 
 return_statement : RETURN expression ;
 
 break_statement : BREAK ;
 
-for_loop_statement : FOR LPAREN ID IN expression RPAREN BLOCK_START base_statement+ BLOCK_END ;
+code_block : BLOCK_START base_statement+ BLOCK_END ;
 
-if_statement : IF LPAREN expression RPAREN BLOCK_START base_statement+ BLOCK_END else_statement? ;
+for_loop_statement : FOR LPAREN ID IN expression RPAREN code_block ;
 
-else_statement : ELSE BLOCK_START base_statement+ BLOCK_END ;
+if_statement : IF LPAREN expression RPAREN code_block else_statement? ;
+
+else_statement : ELSE code_block ;
 
 simple_statement :
     typed_assignment |

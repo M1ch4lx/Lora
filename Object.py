@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class ObjectType(Enum):
-    UNDEFINED = 0,
+    NONE = 0,
     INT = 1,
     FLOAT = 2,
     BOOLEAN = 3
@@ -13,7 +13,7 @@ class ObjectType(Enum):
 class Object:
     def __init__(self):
         self.value = None
-        self.type = ObjectType.UNDEFINED
+        self.type = ObjectType.NONE
 
 
 class Boolean(Object):
