@@ -13,6 +13,7 @@ class Lora:
         self.current_context: Context = Context()
         self.expression_stack: list = []
         self.marshal: Marshal = Marshal()
+        self.breaking_loop = False
 
         self.add_python_function(
             'print', [ObjectType.ANY], lambda args: print(args[0]))

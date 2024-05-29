@@ -86,13 +86,17 @@ class LoraVisitorImpl(LoraVisitor):
         original_context = self.lora.swap_context(function_context)
 
         if function.built_in:
+
             python_value_args = []
             for index, arg in enumerate(evaluated_args.value):
                 expected_type = function.signature.args[index].type
                 if expected_type != ObjectType.ANY and arg.type != expected_type:
                     raise Exception(f"Mismatched argument type at position {index}. Expected {expected_type.name}, got {arg.type}")
-                python_value_args.append(arg.value)
+                python_value_args.append(
+                    self.lora.marshal.lora_to_python(arg))
+
             result = function.python_callback(python_value_args)
+
             self.lora.start_expression()
             if result is not None:
                 self.lora.add_value(self.lora.marshal.python_to_lora(result))
@@ -116,7 +120,15 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#array.
     def visitArray(self, ctx: LoraParser.ArrayContext):
-        return self.visitChildren(ctx)
+        original_expression_stack = self.lora.swap_expression_stack([])
+        self.lora.start_expression()
+        self.visitChildren(ctx)
+        self.lora.evaluate_expression()
+        self.lora.pack_expression_result()
+        result = self.lora.expression_result()
+        array = Array(result.value)
+        original_expression_stack.append(array)
+        self.lora.swap_expression_stack(original_expression_stack)
 
     # Visit a parse tree produced by LoraParser#object_field.
     def visitObject_field(self, ctx: LoraParser.Object_fieldContext):
@@ -207,15 +219,34 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#break_statement.
     def visitBreak_statement(self, ctx: LoraParser.Break_statementContext):
+        if self.lora.current_context.loop_count > 0:
+            self.lora.breaking_loop = True
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#for_loop_statement.
     def visitFor_loop_statement(self, ctx: LoraParser.For_loop_statementContext):
-        return self.visitChildren(ctx)
+        self.lora.start_expression()
+        self.visit(ctx.expression())
+        self.lora.evaluate_expression()
+        result = self.lora.expression_result()
+        if not isinstance(result, Array):
+            raise Exception('Expected array to iterate')
+        self.lora.current_context.loop_count += 1
+        iter_name = ctx.ID().getText()
+        for elem in result.value:
+            self.lora.assign_variable(iter_name, elem)
+            self.visit(ctx.code_block())
+            if self.lora.breaking_loop:
+                break
+        self.lora.breaking_loop = False
+        self.lora.current_context.loop_count -= 1
 
     # Visit a parse tree produced by LoraParser#code_block.
     def visitCode_block(self, ctx: LoraParser.Code_blockContext):
-        return self.visitChildren(ctx)
+        for statement in ctx.statement():
+            if self.lora.breaking_loop:
+                break
+            self.visit(statement)
 
     # Visit a parse tree produced by LoraParser#if_statement.
     def visitIf_statement(self, ctx: LoraParser.If_statementContext):

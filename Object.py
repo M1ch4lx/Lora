@@ -20,6 +20,13 @@ class Object:
         self.type = ObjectType.NONE
 
 
+class Array(Object):
+    def __init__(self, values):
+        super().__init__()
+        self.value = values
+        self.type = ObjectType.ARRAY
+
+
 class Callback(Object):
     def __init__(self, function: Function):
         super().__init__()
