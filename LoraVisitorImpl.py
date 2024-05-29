@@ -41,31 +41,33 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#tuple.
     def visitTuple(self, ctx: LoraParser.TupleContext):
-        return ctx.expression()
+        original_expression_stack = self.lora.swap_expression_stack([])
+        self.lora.start_expression()
+        self.visitChildren(ctx)
+        self.lora.evaluate_expression()
+        self.lora.pack_expression_result()
+        result = self.lora.expression_result()
+        original_expression_stack.append(result)
+        self.lora.swap_expression_stack(original_expression_stack)
 
     # Visit a parse tree produced by LoraParser#function_call.
     def visitFunction_call(self, ctx: LoraParser.Function_callContext):
-        arg_expressions = self.visit(ctx.tuple_()) if ctx.tuple_() else []
+        original_expression_stack = self.lora.swap_expression_stack([])
+        self.lora.start_expression()
+        self.visit(ctx.tuple_())
+
+        evaluated_args: Tuple = self.lora.expression_result()
+
         function_name = ctx.ID().getText()
-        function_id = get_function_id(function_name, len(arg_expressions))
+        function_id = get_function_id(function_name, len(evaluated_args.value))
         function = self.lora.functions_set.find_function(function_id)
 
         if function is None:
-            raise Exception("Undefined function call")
-
-        original_expression_stack = self.lora.swap_expression_stack([])
-
-        evaluated_args = []
-
-        for arg_expression in arg_expressions:
-            self.lora.start_expression()
-            self.visit(arg_expression)
-            expr_result = self.lora.evaluate_expression()
-            evaluated_args.append(expr_result)
+            raise Exception("Cannot resolve function call: " + function_name)
 
         function_context = Context()
 
-        for index, arg_value in enumerate(evaluated_args):
+        for index, arg_value in enumerate(evaluated_args.value):
             var = Variable(function.signature.args[index].name, arg_value)
             function_context.create_variable(var)
 
@@ -73,7 +75,7 @@ class LoraVisitorImpl(LoraVisitor):
 
         self.visit(function.code_block)
 
-        if self.lora.expression_stack_empty():
+        if self.lora.is_expression_stack_empty():
             return_value = Object()
         else:
             return_value = self.lora.expression_result()
@@ -128,8 +130,21 @@ class LoraVisitorImpl(LoraVisitor):
     def visitAssignment(self, ctx: LoraParser.AssignmentContext):
         self.lora.start_expression()
         children = self.visitChildren(ctx)
-        result = self.lora.evaluate_expression()
-        self.lora.assign_variable(ctx.ID().getText(), result)
+        self.lora.evaluate_expression()
+        result = self.lora.expression_result()
+        variables = [id.getText() for id in ctx.ID()]
+
+        if len(variables) > 1 and not isinstance(result, Tuple):
+            raise Exception('Expected tuple')
+
+        values = [result] if len(variables) == 1 else result.value
+
+        if len(variables) != len(values):
+            raise Exception('Expected tuple with ' + str(len(variables)) + ' elements')
+
+        for i, name in enumerate(variables):
+            self.lora.assign_variable(name, values[i])
+
         return children
 
     # Visit a parse tree produced by LoraParser#function_parameter.
@@ -182,7 +197,8 @@ class LoraVisitorImpl(LoraVisitor):
     def visitIf_statement(self, ctx: LoraParser.If_statementContext):
         self.lora.start_expression()
         self.visit(ctx.getChild(2))
-        result = self.lora.evaluate_expression()
+        self.lora.evaluate_expression()
+        result = self.lora.expression_result()
         if result.value:
             self.visit(ctx.getChild(4))
         elif ctx.else_statement():
@@ -199,7 +215,7 @@ class LoraVisitorImpl(LoraVisitor):
         if ctx.expression():
             self.lora.start_expression()
             children = self.visitChildren(ctx)
-            result = self.lora.evaluate_expression()
+            self.lora.evaluate_expression()
             return children
 
         return self.visitChildren(ctx)

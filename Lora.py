@@ -31,7 +31,7 @@ class Lora:
         else:
             var.object = object
 
-        print(name + ': ' + object.type.name + ' = ' + str(object.value))
+        print(name + ': ' + object.type.name + ' = ' + str(object))
 
     def variable_exists(self, name):
         return self.current_context.variable_exists(name)
@@ -77,12 +77,6 @@ class Lora:
         right_operand = self.expression_stack[index + 2]
         result = None
 
-        if isinstance(left_operand, Variable):
-            left_operand = left_operand.object
-
-        if isinstance(right_operand, Variable):
-            right_operand = right_operand.object
-
         if op == Operator.ADD:
             result = left_operand + right_operand
         if op == Operator.SUB:
@@ -101,25 +95,37 @@ class Lora:
 
         return True
 
-    def expression_stack_empty(self):
+    def is_expression_stack_empty(self):
         return len(self.expression_stack) == 0
 
     def expression_result(self):
         if len(self.expression_stack) == 0:
             raise Exception("There is no expression result")
 
-        if len(self.expression_stack) > 1:
-            raise Exception("Expression not yet evaluated or invalid expression stack state")
+        if not self.is_expression_evaluated():
+            raise Exception("Expression not yet evaluated")
 
         return self.expression_stack[0]
 
+    def dereference_variables(self):
+        for i, elem in enumerate(self.expression_stack):
+            if isinstance(elem, Variable):
+                self.expression_stack[i] = elem.object
+
+    def is_expression_evaluated(self):
+        for elem in self.expression_stack:
+            if not isinstance(elem, Object):
+                return False
+        return True
+
+    def pack_expression_result(self):
+        if not self.is_expression_evaluated():
+            raise Exception("Expression not yet evaluated")
+        tuple = Tuple(self.expression_stack)
+        self.expression_stack = [tuple]
+
     def evaluate_expression(self):
+        self.dereference_variables()
+
         while self.evaluate_next_operator():
             pass
-
-        result = self.expression_stack[0]
-
-        if isinstance(result, Variable):
-            result = result.object
-
-        return result

@@ -7,7 +7,8 @@ class ObjectType(Enum):
     FLOAT = 2,
     BOOLEAN = 3
     STRING = 4,
-    ARRAY = 5
+    ARRAY = 5,
+    TUPLE = 6
 
 
 class Object:
@@ -16,11 +17,24 @@ class Object:
         self.type = ObjectType.NONE
 
 
+class Tuple(Object):
+    def __init__(self, values):
+        super().__init__()
+        self.value = values
+        self.type = ObjectType.TUPLE
+
+    def __str__(self):
+        return f'({", ".join(str(obj) for obj in self.value)})'
+
+
 class Boolean(Object):
     def __init__(self, value):
         super().__init__()
         self.type = ObjectType.BOOLEAN
         self.value = bool(value)
+
+    def __str__(self):
+        return str(self.value)
 
 
 class Number(Object):
@@ -28,6 +42,9 @@ class Number(Object):
         super().__init__()
         self.type = type
         self.value = float(value_str)
+
+    def __str__(self):
+        return str(self.value)
 
     def __add__(self, other):
         return Number(self.type, self.value + other.value)

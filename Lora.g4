@@ -86,18 +86,20 @@ expression :
     value |
     array |
     object |
+    LPAREN expression RPAREN |
+    LPAREN tuple RPAREN |
     variable_reference |
     function_call |
     expression index_operator |
     expression attribute_operator |
     expression op=(MULT | DIV) expression |
     expression op=(PLUS | MINUS) expression |
-    expression op=(EQ | NEQ | LT | LTE | GT | GTE | AND | OR | NOT) expression |
-    LPAREN expression RPAREN ;
+    expression op=(EQ | NEQ | LT | LTE | GT | GTE | AND | OR | NOT) expression ;
 
 typed_assignment : typed_variable ASSIGN expression ;
 
-assignment : ID ASSIGN expression ;
+assignment : ID (COMMA ID)* ASSIGN expression |
+    LPAREN ID (COMMA ID)* RPAREN ASSIGN expression ;
 
 function_parameter :
     ID |
