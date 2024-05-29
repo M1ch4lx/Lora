@@ -3,13 +3,30 @@ from Function import *
 from Operator import Operator
 from Variable import *
 from Object import *
+from TypeMarshalling import *
+import math
 
 
 class Lora:
     def __init__(self):
-        self.functions_set: FunctionsSet = FunctionsSet()
+        self.function_set: FunctionSet = FunctionSet()
         self.current_context: Context = Context()
         self.expression_stack: list = []
+        self.marshal: Marshal = Marshal()
+
+        self.add_python_function(
+            'print', [ObjectType.ANY], lambda args: print(args[0]))
+
+        self.add_python_function(
+            'sin', [ObjectType.FLOAT], lambda args: math.sin(args[0]))
+
+    def add_python_function(self, name, args, callback):
+        args = [FunctionArgument(i, str(i), type) for i, type in enumerate(args)]
+        signature = FunctionSignature(name, args)
+        function = Function(signature, is_python_function=True, python_callback=callback)
+        if self.function_set.function_exists(name):
+            raise Exception(f"Function already exists: {name}")
+        self.function_set.add_function(function)
 
     def swap_context(self, new_context):
         current_context = self.current_context
@@ -25,6 +42,8 @@ class Lora:
         return self.current_context.find_variable(name)
 
     def assign_variable(self, name, object):
+        if self.function_set.function_exists(name):
+            raise Exception(f"Variable name {name} shadows function")
         var = self.get_variable(name)
         if var is None:
             self.current_context.create_variable(Variable(name, object))
@@ -52,12 +71,15 @@ class Lora:
         self.expression_stack.append(operand)
 
     def add_reference(self, name):
-        var = self.get_variable(name)
-
-        if var == None:
-            raise Exception('Variable not found: ' + name)
-
-        self.expression_stack.append(var)
+        function = self.function_set.find_function(name)
+        if function is not None:
+            callback = Callback(function)
+            self.expression_stack.append(callback)
+        else:
+            var = self.get_variable(name)
+            if var == None:
+                raise Exception('Variable not found: ' + name)
+            self.expression_stack.append(var)
 
     def next_operator(self):
         for i, e in reversed(list(enumerate(self.expression_stack))):

@@ -19,7 +19,11 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#program.
     def visitProgram(self, ctx: LoraParser.ProgramContext):
-        return self.visitChildren(ctx)
+        for fd in ctx.function_declaration():
+            self.visit(fd)
+
+        for statement in ctx.statement():
+            self.visit(statement)
 
     # Visit a parse tree produced by LoraParser#import_statement.
     def visitImport_statement(self, ctx: LoraParser.Import_statementContext):
@@ -31,7 +35,7 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#value.
     def visitValue(self, ctx: LoraParser.ValueContext):
-        self.lora.add_value(Number(ObjectType.FLOAT, ctx.getText()))
+        self.lora.add_value(Number(ObjectType.FLOAT, float(ctx.getText())))
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#variable_reference.
@@ -59,21 +63,41 @@ class LoraVisitorImpl(LoraVisitor):
         evaluated_args: Tuple = self.lora.expression_result()
 
         function_name = ctx.ID().getText()
-        function_id = get_function_id(function_name, len(evaluated_args.value))
-        function = self.lora.functions_set.find_function(function_id)
+        function_id = get_function_id(function_name)
+
+        function: Function = self.lora.function_set.find_function(function_id)
+        if function is None:
+            callback_var = self.lora.current_context.find_variable(function_name)
+            if callback_var.object.type == ObjectType.CALLBACK:
+                function = callback_var.object.value
 
         if function is None:
             raise Exception("Cannot resolve function call: " + function_name)
 
+        if function.signature.args_count != len(evaluated_args.value):
+            raise Exception(f"Function {function.signature.name} expects {function.signature.args_count} arguments")
+
         function_context = Context()
 
-        for index, arg_value in enumerate(evaluated_args.value):
-            var = Variable(function.signature.args[index].name, arg_value)
+        for index, arg in enumerate(evaluated_args.value):
+            var = Variable(function.signature.args[index].name, arg)
             function_context.create_variable(var)
 
         original_context = self.lora.swap_context(function_context)
 
-        self.visit(function.code_block)
+        if function.built_in:
+            python_value_args = []
+            for index, arg in enumerate(evaluated_args.value):
+                expected_type = function.signature.args[index].type
+                if expected_type != ObjectType.ANY and arg.type != expected_type:
+                    raise Exception(f"Mismatched argument type at position {index}. Expected {expected_type.name}, got {arg.type}")
+                python_value_args.append(arg.value)
+            result = function.python_callback(python_value_args)
+            self.lora.start_expression()
+            if result is not None:
+                self.lora.add_value(self.lora.marshal.python_to_lora(result))
+        else:
+            self.visit(function.parser_context)
 
         if self.lora.is_expression_stack_empty():
             return_value = Object()
@@ -168,8 +192,8 @@ class LoraVisitorImpl(LoraVisitor):
         code_block = ctx.code_block()
         parameters = [FunctionArgument(i, param) for i, param in enumerate(parameters)]
         signature = FunctionSignature(function_name, parameters)
-        function = Function(signature, is_built_in=False, code_block=code_block)
-        self.lora.functions_set.add_function(function)
+        function = Function(signature, is_python_function=False, parser_context=code_block)
+        self.lora.function_set.add_function(function)
 
     # Visit a parse tree produced by LoraParser#return_statement.
     def visitReturn_statement(self, ctx: LoraParser.Return_statementContext):
@@ -218,10 +242,6 @@ class LoraVisitorImpl(LoraVisitor):
             self.lora.evaluate_expression()
             return children
 
-        return self.visitChildren(ctx)
-
-    # Visit a parse tree produced by LoraParser#base_statement.
-    def visitBase_statement(self, ctx: LoraParser.Base_statementContext):
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#statement.

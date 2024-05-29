@@ -5,8 +5,8 @@ class FunctionArgument:
         self.index = index
 
 
-def get_function_id(name, args_count):
-    return name + str(args_count)
+def get_function_id(name):
+    return name
 
 
 class FunctionSignature:
@@ -14,17 +14,18 @@ class FunctionSignature:
         self.name = name
         self.args_count = len(args)
         self.args = args
-        self.id = get_function_id(self.name, self.args_count)
+        self.id = get_function_id(self.name)
 
 
 class Function:
-    def __init__(self, signature: FunctionSignature, is_built_in: bool, code_block):
+    def __init__(self, signature: FunctionSignature, is_python_function: bool, parser_context=None, python_callback=None):
         self.signature = signature
-        self.code_block = code_block
-        self.built_in = is_built_in
+        self.parser_context = parser_context
+        self.built_in = is_python_function
+        self.python_callback = python_callback
 
 
-class FunctionsSet:
+class FunctionSet:
     def __init__(self):
         self.functions = {}
 

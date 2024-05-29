@@ -1,4 +1,5 @@
 from enum import Enum
+from Function import Function
 
 
 class ObjectType(Enum):
@@ -8,13 +9,22 @@ class ObjectType(Enum):
     BOOLEAN = 3
     STRING = 4,
     ARRAY = 5,
-    TUPLE = 6
+    TUPLE = 6,
+    CALLBACK = 7,
+    ANY = 8
 
 
 class Object:
     def __init__(self):
         self.value = None
         self.type = ObjectType.NONE
+
+
+class Callback(Object):
+    def __init__(self, function: Function):
+        super().__init__()
+        self.value = function
+        self.type = ObjectType.CALLBACK
 
 
 class Tuple(Object):
@@ -38,10 +48,10 @@ class Boolean(Object):
 
 
 class Number(Object):
-    def __init__(self, type, value_str):
+    def __init__(self, type, value):
         super().__init__()
         self.type = type
-        self.value = float(value_str)
+        self.value = value
 
     def __str__(self):
         return str(self.value)
@@ -66,3 +76,4 @@ class Number(Object):
 
     def __gt__(self, other):
         return self.value > other.value
+

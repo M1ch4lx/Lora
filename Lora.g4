@@ -53,7 +53,7 @@ INTEND: '\t';
 WS : [ \t\r\n]+ -> skip ;
 COMMENT : '#' ~[\r\n]* -> skip ;
 
-program : (import_statement SEMI)* statement+ ;
+program : (import_statement SEMI)* (statement | function_declaration)+ ;
 
 import_statement : IMPORT ID (AS ID)? ;
 
@@ -113,7 +113,7 @@ return_statement : RETURN expression | RETURN tuple ;
 
 break_statement : BREAK ;
 
-code_block : BLOCK_START base_statement+ BLOCK_END ;
+code_block : BLOCK_START statement+ BLOCK_END ;
 
 for_loop_statement : FOR LPAREN ID IN expression RPAREN code_block ;
 
@@ -128,6 +128,4 @@ simple_statement :
     return_statement |
     expression ;
 
-base_statement : if_statement | simple_statement SEMI | for_loop_statement ;
-
-statement : base_statement | function_declaration ;
+statement : if_statement | simple_statement SEMI | for_loop_statement ;

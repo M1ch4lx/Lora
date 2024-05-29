@@ -1,16 +1,10 @@
-vec = (1, 2, 3);
+print(1);
 
-x, y, z = vec;
+x1 = 0;
+x2 = 3.14 / 2;
 
-x, y, z = x * 2, y * 2, z * 2;
+y1 = sin(x1);
+y2 = sin(x2);
 
-vec = x, y, z;
-
-function add_vec(vec1, vec2)
-{
-    x1, y1, z1 = vec1;
-    x2, y2, z2 = vec2;
-    return x1 + x2, y1 + y2, z1 + z2;
-}
-
-result = add_vec(vec, (4, 2, 0));
+print(y1);
+print(y2);
