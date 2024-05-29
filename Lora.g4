@@ -98,8 +98,8 @@ expression :
 
 typed_assignment : typed_variable ASSIGN expression ;
 
-assignment : ID (COMMA ID)* ASSIGN expression |
-    LPAREN ID (COMMA ID)* RPAREN ASSIGN expression ;
+assignment : ID (COMMA ID)* ASSIGN (expression | tuple) |
+    LPAREN ID (COMMA ID)* RPAREN ASSIGN (expression | tuple) ;
 
 function_parameter :
     ID |
@@ -109,7 +109,7 @@ function_parameters_list : LPAREN ( function_parameter (COMMA function_parameter
 
 function_declaration : FUNCTION ID function_parameters_list code_block ;
 
-return_statement : RETURN expression ;
+return_statement : RETURN expression | RETURN tuple ;
 
 break_statement : BREAK ;
 

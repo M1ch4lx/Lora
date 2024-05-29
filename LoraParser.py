@@ -10,7 +10,7 @@ else:
 
 def serializedATN():
     return [
-        4,1,42,275,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
+        4,1,42,284,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
         6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,
         2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
         7,20,2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,
@@ -24,41 +24,42 @@ def serializedATN():
         12,1,12,1,12,1,12,1,12,1,12,1,12,1,12,1,12,1,12,3,12,155,8,12,1,
         12,1,12,1,12,1,12,1,12,1,12,1,12,1,12,1,12,1,12,1,12,1,12,1,12,5,
         12,170,8,12,10,12,12,12,173,9,12,1,13,1,13,1,13,1,13,1,14,1,14,1,
-        14,5,14,182,8,14,10,14,12,14,185,9,14,1,14,1,14,1,14,1,14,1,14,1,
-        14,5,14,193,8,14,10,14,12,14,196,9,14,1,14,1,14,1,14,3,14,201,8,
-        14,1,15,1,15,3,15,205,8,15,1,16,1,16,1,16,1,16,5,16,211,8,16,10,
-        16,12,16,214,9,16,3,16,216,8,16,1,16,1,16,1,17,1,17,1,17,1,17,1,
-        17,1,18,1,18,1,18,1,19,1,19,1,20,1,20,4,20,232,8,20,11,20,12,20,
-        233,1,20,1,20,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,22,1,22,
-        1,22,1,22,1,22,1,22,3,22,252,8,22,1,23,1,23,1,23,1,24,1,24,1,24,
-        1,24,1,24,3,24,262,8,24,1,25,1,25,1,25,1,25,1,25,3,25,269,8,25,1,
-        26,1,26,3,26,273,8,26,1,26,0,1,24,27,0,2,4,6,8,10,12,14,16,18,20,
-        22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,0,4,1,0,11,15,1,
-        0,24,25,1,0,22,23,1,0,26,34,283,0,59,1,0,0,0,2,67,1,0,0,0,4,73,1,
-        0,0,0,6,77,1,0,0,0,8,79,1,0,0,0,10,81,1,0,0,0,12,89,1,0,0,0,14,96,
-        1,0,0,0,16,107,1,0,0,0,18,120,1,0,0,0,20,124,1,0,0,0,22,137,1,0,
-        0,0,24,154,1,0,0,0,26,174,1,0,0,0,28,200,1,0,0,0,30,204,1,0,0,0,
-        32,206,1,0,0,0,34,219,1,0,0,0,36,224,1,0,0,0,38,227,1,0,0,0,40,229,
-        1,0,0,0,42,237,1,0,0,0,44,245,1,0,0,0,46,253,1,0,0,0,48,261,1,0,
-        0,0,50,268,1,0,0,0,52,272,1,0,0,0,54,55,3,2,1,0,55,56,5,37,0,0,56,
-        58,1,0,0,0,57,54,1,0,0,0,58,61,1,0,0,0,59,57,1,0,0,0,59,60,1,0,0,
-        0,60,63,1,0,0,0,61,59,1,0,0,0,62,64,3,52,26,0,63,62,1,0,0,0,64,65,
-        1,0,0,0,65,63,1,0,0,0,65,66,1,0,0,0,66,1,1,0,0,0,67,68,5,8,0,0,68,
-        71,5,10,0,0,69,70,5,9,0,0,70,72,5,10,0,0,71,69,1,0,0,0,71,72,1,0,
-        0,0,72,3,1,0,0,0,73,74,5,10,0,0,74,75,5,38,0,0,75,76,5,10,0,0,76,
-        5,1,0,0,0,77,78,7,0,0,0,78,7,1,0,0,0,79,80,5,10,0,0,80,9,1,0,0,0,
-        81,86,3,24,12,0,82,83,5,36,0,0,83,85,3,24,12,0,84,82,1,0,0,0,85,
-        88,1,0,0,0,86,84,1,0,0,0,86,87,1,0,0,0,87,11,1,0,0,0,88,86,1,0,0,
-        0,89,90,5,10,0,0,90,92,5,18,0,0,91,93,3,10,5,0,92,91,1,0,0,0,92,
-        93,1,0,0,0,93,94,1,0,0,0,94,95,5,19,0,0,95,13,1,0,0,0,96,97,5,20,
-        0,0,97,102,3,24,12,0,98,99,5,36,0,0,99,101,3,24,12,0,100,98,1,0,
-        0,0,101,104,1,0,0,0,102,100,1,0,0,0,102,103,1,0,0,0,103,105,1,0,
-        0,0,104,102,1,0,0,0,105,106,5,21,0,0,106,15,1,0,0,0,107,116,5,20,
-        0,0,108,113,3,24,12,0,109,110,5,36,0,0,110,112,3,24,12,0,111,109,
-        1,0,0,0,112,115,1,0,0,0,113,111,1,0,0,0,113,114,1,0,0,0,114,117,
-        1,0,0,0,115,113,1,0,0,0,116,108,1,0,0,0,116,117,1,0,0,0,117,118,
-        1,0,0,0,118,119,5,21,0,0,119,17,1,0,0,0,120,121,5,10,0,0,121,122,
-        5,38,0,0,122,123,3,24,12,0,123,19,1,0,0,0,124,133,5,16,0,0,125,130,
+        14,5,14,182,8,14,10,14,12,14,185,9,14,1,14,1,14,1,14,3,14,190,8,
+        14,1,14,1,14,1,14,1,14,5,14,196,8,14,10,14,12,14,199,9,14,1,14,1,
+        14,1,14,1,14,3,14,205,8,14,3,14,207,8,14,1,15,1,15,3,15,211,8,15,
+        1,16,1,16,1,16,1,16,5,16,217,8,16,10,16,12,16,220,9,16,3,16,222,
+        8,16,1,16,1,16,1,17,1,17,1,17,1,17,1,17,1,18,1,18,1,18,1,18,3,18,
+        235,8,18,1,19,1,19,1,20,1,20,4,20,241,8,20,11,20,12,20,242,1,20,
+        1,20,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,22,1,22,1,22,1,22,
+        1,22,1,22,3,22,261,8,22,1,23,1,23,1,23,1,24,1,24,1,24,1,24,1,24,
+        3,24,271,8,24,1,25,1,25,1,25,1,25,1,25,3,25,278,8,25,1,26,1,26,3,
+        26,282,8,26,1,26,0,1,24,27,0,2,4,6,8,10,12,14,16,18,20,22,24,26,
+        28,30,32,34,36,38,40,42,44,46,48,50,52,0,4,1,0,11,15,1,0,24,25,1,
+        0,22,23,1,0,26,34,295,0,59,1,0,0,0,2,67,1,0,0,0,4,73,1,0,0,0,6,77,
+        1,0,0,0,8,79,1,0,0,0,10,81,1,0,0,0,12,89,1,0,0,0,14,96,1,0,0,0,16,
+        107,1,0,0,0,18,120,1,0,0,0,20,124,1,0,0,0,22,137,1,0,0,0,24,154,
+        1,0,0,0,26,174,1,0,0,0,28,206,1,0,0,0,30,210,1,0,0,0,32,212,1,0,
+        0,0,34,225,1,0,0,0,36,234,1,0,0,0,38,236,1,0,0,0,40,238,1,0,0,0,
+        42,246,1,0,0,0,44,254,1,0,0,0,46,262,1,0,0,0,48,270,1,0,0,0,50,277,
+        1,0,0,0,52,281,1,0,0,0,54,55,3,2,1,0,55,56,5,37,0,0,56,58,1,0,0,
+        0,57,54,1,0,0,0,58,61,1,0,0,0,59,57,1,0,0,0,59,60,1,0,0,0,60,63,
+        1,0,0,0,61,59,1,0,0,0,62,64,3,52,26,0,63,62,1,0,0,0,64,65,1,0,0,
+        0,65,63,1,0,0,0,65,66,1,0,0,0,66,1,1,0,0,0,67,68,5,8,0,0,68,71,5,
+        10,0,0,69,70,5,9,0,0,70,72,5,10,0,0,71,69,1,0,0,0,71,72,1,0,0,0,
+        72,3,1,0,0,0,73,74,5,10,0,0,74,75,5,38,0,0,75,76,5,10,0,0,76,5,1,
+        0,0,0,77,78,7,0,0,0,78,7,1,0,0,0,79,80,5,10,0,0,80,9,1,0,0,0,81,
+        86,3,24,12,0,82,83,5,36,0,0,83,85,3,24,12,0,84,82,1,0,0,0,85,88,
+        1,0,0,0,86,84,1,0,0,0,86,87,1,0,0,0,87,11,1,0,0,0,88,86,1,0,0,0,
+        89,90,5,10,0,0,90,92,5,18,0,0,91,93,3,10,5,0,92,91,1,0,0,0,92,93,
+        1,0,0,0,93,94,1,0,0,0,94,95,5,19,0,0,95,13,1,0,0,0,96,97,5,20,0,
+        0,97,102,3,24,12,0,98,99,5,36,0,0,99,101,3,24,12,0,100,98,1,0,0,
+        0,101,104,1,0,0,0,102,100,1,0,0,0,102,103,1,0,0,0,103,105,1,0,0,
+        0,104,102,1,0,0,0,105,106,5,21,0,0,106,15,1,0,0,0,107,116,5,20,0,
+        0,108,113,3,24,12,0,109,110,5,36,0,0,110,112,3,24,12,0,111,109,1,
+        0,0,0,112,115,1,0,0,0,113,111,1,0,0,0,113,114,1,0,0,0,114,117,1,
+        0,0,0,115,113,1,0,0,0,116,108,1,0,0,0,116,117,1,0,0,0,117,118,1,
+        0,0,0,118,119,5,21,0,0,119,17,1,0,0,0,120,121,5,10,0,0,121,122,5,
+        38,0,0,122,123,3,24,12,0,123,19,1,0,0,0,124,133,5,16,0,0,125,130,
         3,18,9,0,126,127,5,36,0,0,127,129,3,18,9,0,128,126,1,0,0,0,129,132,
         1,0,0,0,130,128,1,0,0,0,130,131,1,0,0,0,131,134,1,0,0,0,132,130,
         1,0,0,0,133,125,1,0,0,0,133,134,1,0,0,0,134,135,1,0,0,0,135,136,
@@ -77,35 +78,38 @@ def serializedATN():
         0,0,172,25,1,0,0,0,173,171,1,0,0,0,174,175,3,4,2,0,175,176,5,35,
         0,0,176,177,3,24,12,0,177,27,1,0,0,0,178,183,5,10,0,0,179,180,5,
         36,0,0,180,182,5,10,0,0,181,179,1,0,0,0,182,185,1,0,0,0,183,181,
-        1,0,0,0,183,184,1,0,0,0,184,186,1,0,0,0,185,183,1,0,0,0,186,187,
-        5,35,0,0,187,201,3,24,12,0,188,189,5,18,0,0,189,194,5,10,0,0,190,
-        191,5,36,0,0,191,193,5,10,0,0,192,190,1,0,0,0,193,196,1,0,0,0,194,
-        192,1,0,0,0,194,195,1,0,0,0,195,197,1,0,0,0,196,194,1,0,0,0,197,
-        198,5,19,0,0,198,199,5,35,0,0,199,201,3,24,12,0,200,178,1,0,0,0,
-        200,188,1,0,0,0,201,29,1,0,0,0,202,205,5,10,0,0,203,205,3,4,2,0,
-        204,202,1,0,0,0,204,203,1,0,0,0,205,31,1,0,0,0,206,215,5,18,0,0,
-        207,212,3,30,15,0,208,209,5,36,0,0,209,211,3,30,15,0,210,208,1,0,
-        0,0,211,214,1,0,0,0,212,210,1,0,0,0,212,213,1,0,0,0,213,216,1,0,
-        0,0,214,212,1,0,0,0,215,207,1,0,0,0,215,216,1,0,0,0,216,217,1,0,
-        0,0,217,218,5,19,0,0,218,33,1,0,0,0,219,220,5,5,0,0,220,221,5,10,
-        0,0,221,222,3,32,16,0,222,223,3,40,20,0,223,35,1,0,0,0,224,225,5,
-        6,0,0,225,226,3,24,12,0,226,37,1,0,0,0,227,228,5,4,0,0,228,39,1,
-        0,0,0,229,231,5,16,0,0,230,232,3,50,25,0,231,230,1,0,0,0,232,233,
-        1,0,0,0,233,231,1,0,0,0,233,234,1,0,0,0,234,235,1,0,0,0,235,236,
-        5,17,0,0,236,41,1,0,0,0,237,238,5,2,0,0,238,239,5,18,0,0,239,240,
-        5,10,0,0,240,241,5,3,0,0,241,242,3,24,12,0,242,243,5,19,0,0,243,
-        244,3,40,20,0,244,43,1,0,0,0,245,246,5,1,0,0,246,247,5,18,0,0,247,
-        248,3,24,12,0,248,249,5,19,0,0,249,251,3,40,20,0,250,252,3,46,23,
-        0,251,250,1,0,0,0,251,252,1,0,0,0,252,45,1,0,0,0,253,254,5,7,0,0,
-        254,255,3,40,20,0,255,47,1,0,0,0,256,262,3,26,13,0,257,262,3,28,
-        14,0,258,262,3,38,19,0,259,262,3,36,18,0,260,262,3,24,12,0,261,256,
-        1,0,0,0,261,257,1,0,0,0,261,258,1,0,0,0,261,259,1,0,0,0,261,260,
-        1,0,0,0,262,49,1,0,0,0,263,269,3,44,22,0,264,265,3,48,24,0,265,266,
-        5,37,0,0,266,269,1,0,0,0,267,269,3,42,21,0,268,263,1,0,0,0,268,264,
-        1,0,0,0,268,267,1,0,0,0,269,51,1,0,0,0,270,273,3,50,25,0,271,273,
-        3,34,17,0,272,270,1,0,0,0,272,271,1,0,0,0,273,53,1,0,0,0,24,59,65,
-        71,86,92,102,113,116,130,133,154,169,171,183,194,200,204,212,215,
-        233,251,261,268,272
+        1,0,0,0,183,184,1,0,0,0,184,186,1,0,0,0,185,183,1,0,0,0,186,189,
+        5,35,0,0,187,190,3,24,12,0,188,190,3,10,5,0,189,187,1,0,0,0,189,
+        188,1,0,0,0,190,207,1,0,0,0,191,192,5,18,0,0,192,197,5,10,0,0,193,
+        194,5,36,0,0,194,196,5,10,0,0,195,193,1,0,0,0,196,199,1,0,0,0,197,
+        195,1,0,0,0,197,198,1,0,0,0,198,200,1,0,0,0,199,197,1,0,0,0,200,
+        201,5,19,0,0,201,204,5,35,0,0,202,205,3,24,12,0,203,205,3,10,5,0,
+        204,202,1,0,0,0,204,203,1,0,0,0,205,207,1,0,0,0,206,178,1,0,0,0,
+        206,191,1,0,0,0,207,29,1,0,0,0,208,211,5,10,0,0,209,211,3,4,2,0,
+        210,208,1,0,0,0,210,209,1,0,0,0,211,31,1,0,0,0,212,221,5,18,0,0,
+        213,218,3,30,15,0,214,215,5,36,0,0,215,217,3,30,15,0,216,214,1,0,
+        0,0,217,220,1,0,0,0,218,216,1,0,0,0,218,219,1,0,0,0,219,222,1,0,
+        0,0,220,218,1,0,0,0,221,213,1,0,0,0,221,222,1,0,0,0,222,223,1,0,
+        0,0,223,224,5,19,0,0,224,33,1,0,0,0,225,226,5,5,0,0,226,227,5,10,
+        0,0,227,228,3,32,16,0,228,229,3,40,20,0,229,35,1,0,0,0,230,231,5,
+        6,0,0,231,235,3,24,12,0,232,233,5,6,0,0,233,235,3,10,5,0,234,230,
+        1,0,0,0,234,232,1,0,0,0,235,37,1,0,0,0,236,237,5,4,0,0,237,39,1,
+        0,0,0,238,240,5,16,0,0,239,241,3,50,25,0,240,239,1,0,0,0,241,242,
+        1,0,0,0,242,240,1,0,0,0,242,243,1,0,0,0,243,244,1,0,0,0,244,245,
+        5,17,0,0,245,41,1,0,0,0,246,247,5,2,0,0,247,248,5,18,0,0,248,249,
+        5,10,0,0,249,250,5,3,0,0,250,251,3,24,12,0,251,252,5,19,0,0,252,
+        253,3,40,20,0,253,43,1,0,0,0,254,255,5,1,0,0,255,256,5,18,0,0,256,
+        257,3,24,12,0,257,258,5,19,0,0,258,260,3,40,20,0,259,261,3,46,23,
+        0,260,259,1,0,0,0,260,261,1,0,0,0,261,45,1,0,0,0,262,263,5,7,0,0,
+        263,264,3,40,20,0,264,47,1,0,0,0,265,271,3,26,13,0,266,271,3,28,
+        14,0,267,271,3,38,19,0,268,271,3,36,18,0,269,271,3,24,12,0,270,265,
+        1,0,0,0,270,266,1,0,0,0,270,267,1,0,0,0,270,268,1,0,0,0,270,269,
+        1,0,0,0,271,49,1,0,0,0,272,278,3,44,22,0,273,274,3,48,24,0,274,275,
+        5,37,0,0,275,278,1,0,0,0,276,278,3,42,21,0,277,272,1,0,0,0,277,273,
+        1,0,0,0,277,276,1,0,0,0,278,51,1,0,0,0,279,282,3,50,25,0,280,282,
+        3,34,17,0,281,279,1,0,0,0,281,280,1,0,0,0,282,53,1,0,0,0,27,59,65,
+        71,86,92,102,113,116,130,133,154,169,171,183,189,197,204,206,210,
+        218,221,234,242,260,270,277,281
     ]
 
 class LoraParser ( Parser ):
@@ -1403,6 +1407,10 @@ class LoraParser ( Parser ):
             return self.getTypedRuleContext(LoraParser.ExpressionContext,0)
 
 
+        def tuple_(self):
+            return self.getTypedRuleContext(LoraParser.TupleContext,0)
+
+
         def COMMA(self, i:int=None):
             if i is None:
                 return self.getTokens(LoraParser.COMMA)
@@ -1441,7 +1449,7 @@ class LoraParser ( Parser ):
         self.enterRule(localctx, 28, self.RULE_assignment)
         self._la = 0 # Token type
         try:
-            self.state = 200
+            self.state = 206
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [10]:
@@ -1462,33 +1470,57 @@ class LoraParser ( Parser ):
 
                 self.state = 186
                 self.match(LoraParser.ASSIGN)
-                self.state = 187
-                self.expression(0)
+                self.state = 189
+                self._errHandler.sync(self)
+                la_ = self._interp.adaptivePredict(self._input,14,self._ctx)
+                if la_ == 1:
+                    self.state = 187
+                    self.expression(0)
+                    pass
+
+                elif la_ == 2:
+                    self.state = 188
+                    self.tuple_()
+                    pass
+
+
                 pass
             elif token in [18]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 188
+                self.state = 191
                 self.match(LoraParser.LPAREN)
-                self.state = 189
+                self.state = 192
                 self.match(LoraParser.ID)
-                self.state = 194
+                self.state = 197
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while _la==36:
-                    self.state = 190
+                    self.state = 193
                     self.match(LoraParser.COMMA)
-                    self.state = 191
+                    self.state = 194
                     self.match(LoraParser.ID)
-                    self.state = 196
+                    self.state = 199
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
-                self.state = 197
+                self.state = 200
                 self.match(LoraParser.RPAREN)
-                self.state = 198
+                self.state = 201
                 self.match(LoraParser.ASSIGN)
-                self.state = 199
-                self.expression(0)
+                self.state = 204
+                self._errHandler.sync(self)
+                la_ = self._interp.adaptivePredict(self._input,16,self._ctx)
+                if la_ == 1:
+                    self.state = 202
+                    self.expression(0)
+                    pass
+
+                elif la_ == 2:
+                    self.state = 203
+                    self.tuple_()
+                    pass
+
+
                 pass
             else:
                 raise NoViableAltException(self)
@@ -1541,18 +1573,18 @@ class LoraParser ( Parser ):
         localctx = LoraParser.Function_parameterContext(self, self._ctx, self.state)
         self.enterRule(localctx, 30, self.RULE_function_parameter)
         try:
-            self.state = 204
+            self.state = 210
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,16,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,18,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 202
+                self.state = 208
                 self.match(LoraParser.ID)
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 203
+                self.state = 209
                 self.typed_variable()
                 pass
 
@@ -1619,29 +1651,29 @@ class LoraParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 206
+            self.state = 212
             self.match(LoraParser.LPAREN)
-            self.state = 215
+            self.state = 221
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==10:
-                self.state = 207
+                self.state = 213
                 self.function_parameter()
-                self.state = 212
+                self.state = 218
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while _la==36:
-                    self.state = 208
-                    self.match(LoraParser.COMMA)
-                    self.state = 209
-                    self.function_parameter()
                     self.state = 214
+                    self.match(LoraParser.COMMA)
+                    self.state = 215
+                    self.function_parameter()
+                    self.state = 220
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
 
 
-            self.state = 217
+            self.state = 223
             self.match(LoraParser.RPAREN)
         except RecognitionException as re:
             localctx.exception = re
@@ -1699,13 +1731,13 @@ class LoraParser ( Parser ):
         self.enterRule(localctx, 34, self.RULE_function_declaration)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 219
+            self.state = 225
             self.match(LoraParser.FUNCTION)
-            self.state = 220
+            self.state = 226
             self.match(LoraParser.ID)
-            self.state = 221
+            self.state = 227
             self.function_parameters_list()
-            self.state = 222
+            self.state = 228
             self.code_block()
         except RecognitionException as re:
             localctx.exception = re
@@ -1728,6 +1760,10 @@ class LoraParser ( Parser ):
 
         def expression(self):
             return self.getTypedRuleContext(LoraParser.ExpressionContext,0)
+
+
+        def tuple_(self):
+            return self.getTypedRuleContext(LoraParser.TupleContext,0)
 
 
         def getRuleIndex(self):
@@ -1755,11 +1791,26 @@ class LoraParser ( Parser ):
         localctx = LoraParser.Return_statementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 36, self.RULE_return_statement)
         try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 224
-            self.match(LoraParser.RETURN)
-            self.state = 225
-            self.expression(0)
+            self.state = 234
+            self._errHandler.sync(self)
+            la_ = self._interp.adaptivePredict(self._input,21,self._ctx)
+            if la_ == 1:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 230
+                self.match(LoraParser.RETURN)
+                self.state = 231
+                self.expression(0)
+                pass
+
+            elif la_ == 2:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 232
+                self.match(LoraParser.RETURN)
+                self.state = 233
+                self.tuple_()
+                pass
+
+
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1805,7 +1856,7 @@ class LoraParser ( Parser ):
         self.enterRule(localctx, 38, self.RULE_break_statement)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 227
+            self.state = 236
             self.match(LoraParser.BREAK)
         except RecognitionException as re:
             localctx.exception = re
@@ -1863,21 +1914,21 @@ class LoraParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 229
+            self.state = 238
             self.match(LoraParser.BLOCK_START)
-            self.state = 231 
+            self.state = 240 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
-                self.state = 230
+                self.state = 239
                 self.base_statement()
-                self.state = 233 
+                self.state = 242 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & 1440854) != 0)):
                     break
 
-            self.state = 235
+            self.state = 244
             self.match(LoraParser.BLOCK_END)
         except RecognitionException as re:
             localctx.exception = re
@@ -1944,19 +1995,19 @@ class LoraParser ( Parser ):
         self.enterRule(localctx, 42, self.RULE_for_loop_statement)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 237
+            self.state = 246
             self.match(LoraParser.FOR)
-            self.state = 238
+            self.state = 247
             self.match(LoraParser.LPAREN)
-            self.state = 239
+            self.state = 248
             self.match(LoraParser.ID)
-            self.state = 240
+            self.state = 249
             self.match(LoraParser.IN)
-            self.state = 241
+            self.state = 250
             self.expression(0)
-            self.state = 242
+            self.state = 251
             self.match(LoraParser.RPAREN)
-            self.state = 243
+            self.state = 252
             self.code_block()
         except RecognitionException as re:
             localctx.exception = re
@@ -2022,21 +2073,21 @@ class LoraParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 245
+            self.state = 254
             self.match(LoraParser.IF)
-            self.state = 246
+            self.state = 255
             self.match(LoraParser.LPAREN)
-            self.state = 247
+            self.state = 256
             self.expression(0)
-            self.state = 248
+            self.state = 257
             self.match(LoraParser.RPAREN)
-            self.state = 249
+            self.state = 258
             self.code_block()
-            self.state = 251
+            self.state = 260
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==7:
-                self.state = 250
+                self.state = 259
                 self.else_statement()
 
 
@@ -2089,9 +2140,9 @@ class LoraParser ( Parser ):
         self.enterRule(localctx, 46, self.RULE_else_statement)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 253
+            self.state = 262
             self.match(LoraParser.ELSE)
-            self.state = 254
+            self.state = 263
             self.code_block()
         except RecognitionException as re:
             localctx.exception = re
@@ -2154,36 +2205,36 @@ class LoraParser ( Parser ):
         localctx = LoraParser.Simple_statementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 48, self.RULE_simple_statement)
         try:
-            self.state = 261
+            self.state = 270
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,21,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,24,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 256
+                self.state = 265
                 self.typed_assignment()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 257
+                self.state = 266
                 self.assignment()
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 258
+                self.state = 267
                 self.break_statement()
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 259
+                self.state = 268
                 self.return_statement()
                 pass
 
             elif la_ == 5:
                 self.enterOuterAlt(localctx, 5)
-                self.state = 260
+                self.state = 269
                 self.expression(0)
                 pass
 
@@ -2244,24 +2295,24 @@ class LoraParser ( Parser ):
         localctx = LoraParser.Base_statementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 50, self.RULE_base_statement)
         try:
-            self.state = 268
+            self.state = 277
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [1]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 263
+                self.state = 272
                 self.if_statement()
                 pass
             elif token in [4, 6, 10, 11, 12, 13, 14, 15, 16, 18, 20]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 264
+                self.state = 273
                 self.simple_statement()
-                self.state = 265
+                self.state = 274
                 self.match(LoraParser.SEMI)
                 pass
             elif token in [2]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 267
+                self.state = 276
                 self.for_loop_statement()
                 pass
             else:
@@ -2316,17 +2367,17 @@ class LoraParser ( Parser ):
         localctx = LoraParser.StatementContext(self, self._ctx, self.state)
         self.enterRule(localctx, 52, self.RULE_statement)
         try:
-            self.state = 272
+            self.state = 281
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [1, 2, 4, 6, 10, 11, 12, 13, 14, 15, 16, 18, 20]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 270
+                self.state = 279
                 self.base_statement()
                 pass
             elif token in [5]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 271
+                self.state = 280
                 self.function_declaration()
                 pass
             else:
