@@ -223,6 +223,29 @@ class LoraVisitorImpl(LoraVisitor):
             self.lora.breaking_loop = True
         return self.visitChildren(ctx)
 
+    # Visit a parse tree produced by LoraParser#while_loop_statement.
+    def visitWhile_loop_statement(self, ctx: LoraParser.While_loop_statementContext):
+        self.lora.current_context.loop_count += 1
+        while True:
+            self.lora.start_expression()
+            self.visit(ctx.expression())
+            self.lora.evaluate_expression()
+            result = self.lora.expression_result()
+
+            if not isinstance(result, Boolean):
+                raise Exception('Expected logical expression')
+
+            if not result.value:
+                break
+
+            self.visit(ctx.code_block())
+
+            if self.lora.breaking_loop:
+                break
+
+        self.lora.breaking_loop = False
+        self.lora.current_context.loop_count -= 1
+
     # Visit a parse tree produced by LoraParser#for_loop_statement.
     def visitFor_loop_statement(self, ctx: LoraParser.For_loop_statementContext):
         self.lora.start_expression()

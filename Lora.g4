@@ -2,6 +2,7 @@ grammar Lora;
 
 IF : 'if' ;
 FOR : 'for' ;
+WHILE : 'while' ;
 IN : 'in' ;
 BREAK : 'break' ;
 FUNCTION : 'function' ;
@@ -117,6 +118,8 @@ code_block : BLOCK_START statement+ BLOCK_END ;
 
 for_loop_statement : FOR LPAREN ID IN expression RPAREN code_block ;
 
+while_loop_statement : WHILE LPAREN expression RPAREN code_block ;
+
 if_statement : IF LPAREN expression RPAREN code_block else_statement? ;
 
 else_statement : ELSE code_block ;
@@ -128,4 +131,4 @@ simple_statement :
     return_statement |
     expression ;
 
-statement : if_statement | simple_statement SEMI | for_loop_statement ;
+statement : if_statement | simple_statement SEMI | for_loop_statement | while_loop_statement ;
