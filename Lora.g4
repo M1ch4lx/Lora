@@ -138,7 +138,7 @@ function_parameter :
 
 function_parameters_list : LPAREN ( function_parameter (COMMA function_parameter)* )? RPAREN ;
 
-function_declaration : FUNCTION ID function_parameters_list code_block ;
+function_declaration : FUNCTION (ID COLON)? ID function_parameters_list code_block ;
 
 return_statement : RETURN expression | RETURN tuple ;
 

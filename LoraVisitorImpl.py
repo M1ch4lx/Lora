@@ -12,6 +12,7 @@ from Function import *
 from Context import *
 from Variable import *
 
+
 class LoraVisitorImpl(LoraVisitor):
 
     def __init__(self, lora: Lora):
@@ -20,11 +21,7 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#program.
     def visitProgram(self, ctx: LoraParser.ProgramContext):
-        for fd in ctx.function_declaration():
-            self.visit(fd)
-
-        for statement in ctx.statement():
-            self.visit(statement)
+        self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#import_statement.
     def visitImport_statement(self, ctx: LoraParser.Import_statementContext):
@@ -69,6 +66,11 @@ class LoraVisitorImpl(LoraVisitor):
             evaluated_args: Tuple = Tuple([])
 
         function_name = ctx.ID().getText()
+        if this_object is not None:
+            if this_object.prototype_name is None:
+                raise Exception(f"Object have no method {function_name}")
+            function_name = this_object.prototype_name + ':' + function_name
+
         function_id = get_function_id(function_name)
 
         function: Function = self.lora.function_set.find_function(function_id)
@@ -238,8 +240,8 @@ class LoraVisitorImpl(LoraVisitor):
             self.lora.evaluate_expression()
             result = self.lora.expression_result()
             self.this = result
-            self.visit(ctx.function_call())
             self.lora.swap_expression_stack(original)
+            self.visit(ctx.function_call())
         else:
             return self.visitChildren(ctx)
 
@@ -255,6 +257,8 @@ class LoraVisitorImpl(LoraVisitor):
         if len(self.lora.expression_stack) > 1:
             self.lora.pack_expression_result()
         expr_result = self.lora.expression_result()
+        if expr_result.type == ObjectType.CALLBACK:
+            raise Exception('Assigning callback to property is forbidden')
 
         ids_chain = [id.getText() for id in ctx.ID()]
         variable_name = ids_chain[0]
@@ -276,6 +280,7 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#assignment.
     def visitAssignment(self, ctx: LoraParser.AssignmentContext):
+        a = ctx.getText()
         self.lora.start_expression()
         children = self.visitChildren(ctx)
         self.lora.evaluate_expression()
@@ -311,8 +316,18 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#function_declaration.
     def visitFunction_declaration(self, ctx: LoraParser.Function_declarationContext):
-        function_name = ctx.ID().getText()
-        parameters = self.visit(ctx.getChild(2))
+        ids = ctx.ID()
+        if len(ids) > 1:
+            prototype_name = ids[0].getText()
+            owner = self.lora.get_variable(prototype_name)
+            method_name = ids[1].getText()
+            if owner is None:
+                raise Exception(f'Cannot create method {method_name}, object {prototype_name} not found')
+            owner.object.prototype_name = prototype_name
+            function_name = prototype_name + ':' + method_name
+        else:
+            function_name = ids[0].getText()
+        parameters = self.visit(ctx.function_parameters_list())
         code_block = ctx.code_block()
         parameters = [FunctionArgument(i, param) for i, param in enumerate(parameters)]
         signature = FunctionSignature(function_name, parameters)

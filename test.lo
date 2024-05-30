@@ -1,17 +1,50 @@
-vec = {
-    x: 1,
-    y: 2
-};
+vector = { };
 
-vec.x = 2;
+function vector:zero(self)
+{
+    vec = self;
+    vec.x = 0;
+    vec.y = 0;
+    return vec;
+}
 
-function move(self, vec)
+function vector:new(self, x, y)
+{
+    vec = self;
+    vec.x = x;
+    vec.y = y;
+    return vec;
+}
+
+function vector:move(self, vec)
 {
     self.x = self.x + vec.x;
     self.y = self.y + vec.y;
 }
 
-vec.move({ x: 10, y: 0-5 });
+function vector:print(self)
+{
+    print(self.x);
+    print(self.y);
+}
 
-print(vec.x);
-print(vec.y);
+function move(position, vec)
+{
+    position.x = position.x + vec.x;
+    position.y = position.y + vec.y;
+    return position;
+}
+
+vec = vector.zero();
+vec.move(vector.new(10, 5));
+
+vec.print();
+
+vec = move(vec, {x:0, y:5});
+
+vec.print();
+vec.z = 3;
+
+vec2 = vec;
+vec2.print();
+print(vec2.z);

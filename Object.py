@@ -1,3 +1,4 @@
+import copy
 from enum import Enum
 from Function import Function
 from Context import Context
@@ -20,6 +21,7 @@ class Object:
         self.value = None
         self.type = ObjectType.USER
         self.context: Context = Context()
+        self.prototype_name = None
 
 
 class Array(Object):
@@ -37,6 +39,20 @@ class Callback(Object):
         super().__init__()
         self.value = function
         self.type = ObjectType.CALLBACK
+
+    def __deepcopy__(self, memo):
+        if id(self) in memo:
+            return memo[id(self)]
+
+        new_instance = self.__class__.__new__(self.__class__)
+        memo[id(self)] = new_instance
+
+        new_instance.value = self.value
+        new_instance.type = self.type
+        new_instance.context = copy.deepcopy(self.context)
+        new_instance.prototype_name = self.prototype_name
+
+        return new_instance
 
 
 class Tuple(Object):
