@@ -1,6 +1,6 @@
 from Context import Context
 from Function import *
-from Operator import Operator
+from Operator import *
 from Variable import *
 from Object import *
 from TypeMarshalling import *
@@ -96,22 +96,49 @@ class Lora:
 
         index, op = pair
 
-        left_operand = self.expression_stack[index + 1]
-        right_operand = self.expression_stack[index + 2]
-        result = None
+        operands_count = operator_operands_count(op)
 
-        if op == Operator.ADD:
-            result = left_operand + right_operand
-        if op == Operator.SUB:
-            result = left_operand - right_operand
-        if op == Operator.MUL:
-            result = left_operand * right_operand
-        if op == Operator.DIV:
-            result = left_operand / right_operand
-        if op == Operator.EQ:
-            result = Boolean(left_operand == right_operand)
+        if operands_count == 1:
+            operand = self.expression_stack[index + 1]
+            if op == Operator.NOT:
+                result = Boolean(not operand)
 
-        for i in range(3):
+        elif operands_count == 2:
+            left_operand = self.expression_stack[index + 1]
+            right_operand = self.expression_stack[index + 2]
+
+            if op in (Operator.AND, Operator.OR, Operator.NOT):
+                if left_operand.type != ObjectType.BOOLEAN or right_operand.type != ObjectType.BOOLEAN:
+                    raise Exception("Expected logical expressions in boolean expression")
+
+            if op == Operator.ADD:
+                result = left_operand + right_operand
+            elif op == Operator.SUB:
+                result = left_operand - right_operand
+            elif op == Operator.MUL:
+                result = left_operand * right_operand
+            elif op == Operator.DIV:
+                result = left_operand / right_operand
+            elif op == Operator.EQ:
+                result = Boolean(left_operand == right_operand)
+            elif op == Operator.NEQ:
+                result = Boolean(left_operand != right_operand)
+            elif op == Operator.LT:
+                result = Boolean(left_operand < right_operand)
+            elif op == Operator.LTE:
+                result = Boolean(left_operand <= right_operand)
+            elif op == Operator.GT:
+                result = Boolean(left_operand > right_operand)
+            elif op == Operator.GTE:
+                result = Boolean(left_operand >= right_operand)
+            elif op == Operator.AND:
+                result = Boolean(left_operand and right_operand)
+            elif op == Operator.OR:
+                result = Boolean(left_operand or right_operand)
+        else:
+            raise Exception("Invalid operands count")
+
+        for i in range(1 + operands_count):
             self.expression_stack.pop(index)
 
         self.expression_stack.insert(index, result)

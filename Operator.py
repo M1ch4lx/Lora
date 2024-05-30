@@ -10,3 +10,15 @@ class Operator(Enum):
     NEQ = 5
     LT = 6
     GT = 7
+    LTE = 8
+    GTE = 9
+    AND = 10
+    OR = 11
+    NOT = 12
+
+
+def operator_operands_count(op):
+    if op == Operator.NOT:
+        return 1
+    else:
+        return 2

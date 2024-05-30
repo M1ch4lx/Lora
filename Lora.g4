@@ -11,8 +11,6 @@ ELSE : 'else' ;
 IMPORT : 'import' ;
 AS : 'as' ;
 
-ID : [a-zA-Z_][a-zA-Z0-9_]* ;
-
 INTEGER_VALUE : [0-9]+ ;
 FLOAT_VALUE : [0-9]+ '.' [0-9]* | '.' [0-9]+ ;
 STRING_VALUE : '"' (~["\r\n])* '"' ;
@@ -51,6 +49,8 @@ COLON: ':' ;
 DOT: '.' ;
 INTEND: '\t';
 
+ID : [a-zA-Z_][a-zA-Z0-9_]* ;
+
 WS : [ \t\r\n]+ -> skip ;
 COMMENT : '#' ~[\r\n]* -> skip ;
 
@@ -83,19 +83,46 @@ object : BLOCK_START (object_field (COMMA object_field)*)? BLOCK_END ;
 
 attribute_operator : DOT ID ;
 
-expression : 
-    value |
-    array |
-    object |
-    LPAREN expression RPAREN |
-    LPAREN tuple RPAREN |
-    variable_reference |
-    function_call |
-    expression index_operator |
-    expression attribute_operator |
-    expression op=(MULT | DIV) expression |
-    expression op=(PLUS | MINUS) expression |
-    expression op=(EQ | NEQ | LT | LTE | GT | GTE | AND | OR | NOT) expression ;
+expression
+    : boolean_expression
+    ;
+
+boolean_expression
+    : boolean_term (OR boolean_expression)?
+    ;
+
+boolean_term
+    : boolean_factor (AND boolean_term)?
+    ;
+
+boolean_factor
+    : relational_expression
+    | NOT boolean_factor
+    ;
+
+relational_expression
+    : additive_expression (op=(EQ | NEQ | LT | LTE | GT | GTE) relational_expression)?
+    ;
+
+additive_expression
+    : multiplicative_expression (op=(PLUS | MINUS) additive_expression)?
+    ;
+
+multiplicative_expression
+    : primary_expression (op=(MULT | DIV) multiplicative_expression)?
+    ;
+
+primary_expression
+    : value
+    | array
+    | object
+    | LPAREN expression RPAREN
+    | LPAREN tuple RPAREN
+    | variable_reference
+    | function_call
+    | primary_expression index_operator
+    | primary_expression attribute_operator
+    ;
 
 typed_assignment : typed_variable ASSIGN expression ;
 
