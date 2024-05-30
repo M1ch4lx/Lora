@@ -122,12 +122,15 @@ primary_expression
     | function_call
     | primary_expression index_operator
     | primary_expression attribute_operator
+    | primary_expression DOT function_call
     ;
 
 typed_assignment : typed_variable ASSIGN expression ;
 
 assignment : ID (COMMA ID)* ASSIGN (expression | tuple) |
     LPAREN ID (COMMA ID)* RPAREN ASSIGN (expression | tuple) ;
+
+property_assignment : ID (DOT ID)+ ASSIGN (expression | tuple) ;
 
 function_parameter :
     ID |
@@ -153,6 +156,7 @@ else_statement : ELSE code_block ;
 
 simple_statement :
     typed_assignment |
+    property_assignment |
     assignment |
     break_statement |
     return_statement |

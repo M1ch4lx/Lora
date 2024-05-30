@@ -16,6 +16,7 @@ class LoraVisitorImpl(LoraVisitor):
 
     def __init__(self, lora: Lora):
         self.lora = lora
+        self.this: Object = None
 
     # Visit a parse tree produced by LoraParser#program.
     def visitProgram(self, ctx: LoraParser.ProgramContext):
@@ -56,11 +57,16 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#function_call.
     def visitFunction_call(self, ctx: LoraParser.Function_callContext):
+        this_object = self.this
+        self.this = None
+
         original_expression_stack = self.lora.swap_expression_stack([])
         self.lora.start_expression()
-        self.visit(ctx.tuple_())
-
-        evaluated_args: Tuple = self.lora.expression_result()
+        if ctx.tuple_():
+            self.visit(ctx.tuple_())
+            evaluated_args: Tuple = self.lora.expression_result()
+        else:
+            evaluated_args: Tuple = Tuple([])
 
         function_name = ctx.ID().getText()
         function_id = get_function_id(function_name)
@@ -73,6 +79,9 @@ class LoraVisitorImpl(LoraVisitor):
 
         if function is None:
             raise Exception("Cannot resolve function call: " + function_name)
+
+        if this_object is not None:
+            evaluated_args.value.insert(0, this_object)
 
         if function.signature.args_count != len(evaluated_args.value):
             raise Exception(f"Function {function.signature.name} expects {function.signature.args_count} arguments")
@@ -103,6 +112,7 @@ class LoraVisitorImpl(LoraVisitor):
         else:
             self.visit(function.parser_context)
 
+
         if self.lora.is_expression_stack_empty():
             return_value = Object()
         else:
@@ -132,45 +142,56 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#object_field.
     def visitObject_field(self, ctx: LoraParser.Object_fieldContext):
-        return self.visitChildren(ctx)
+        original = self.lora.swap_expression_stack([])
+        self.lora.start_expression()
+        self.visitChildren(ctx)
+        self.lora.evaluate_expression()
+        if len(self.lora.expression_stack) > 1:
+            self.lora.pack_expression_result()
+        result = self.lora.expression_result()
+        field_name = ctx.ID().getText()
+        self.lora.swap_expression_stack(original)
+        return field_name, result
 
     # Visit a parse tree produced by LoraParser#object.
     def visitObject(self, ctx: LoraParser.ObjectContext):
-        return self.visitChildren(ctx)
+        user_object = Object()
+        for field in ctx.object_field():
+            name, value = self.visit(field)
+            user_object.context.create_variable(
+                Variable(name, value))
+        self.lora.add_value(user_object)
+
 
     # Visit a parse tree produced by LoraParser#attribute_operator.
     def visitAttribute_operator(self, ctx: LoraParser.Attribute_operatorContext):
+        self.lora.add_id(ctx.ID().getText())
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#expression.
     def visitExpression(self, ctx: LoraParser.ExpressionContext):
-        print('Expression')
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#boolean_expression.
     def visitBoolean_expression(self, ctx: LoraParser.Boolean_expressionContext):
-        print('Boolean expr')
         if ctx.OR():
             self.lora.add_operator(Operator.OR)
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#boolean_term.
     def visitBoolean_term(self, ctx: LoraParser.Boolean_termContext):
-        print('Boolean term')
         if ctx.AND():
             self.lora.add_operator(Operator.AND)
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#boolean_factor.
     def visitBoolean_factor(self, ctx: LoraParser.Boolean_factorContext):
-        print('Boolean factor')
         if ctx.NOT():
             self.lora.add_operator(Operator.NOT)
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#relational_expression.
     def visitRelational_expression(self, ctx: LoraParser.Relational_expressionContext):
-        print('Expression relational')
         if ctx.op:
             if ctx.EQ():
                 self.lora.add_operator(Operator.EQ)
@@ -188,7 +209,6 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#additive_expression.
     def visitAdditive_expression(self, ctx: LoraParser.Additive_expressionContext):
-        print('Expression additive')
         if ctx.op:
             if ctx.PLUS():
                 self.lora.add_operator(Operator.ADD)
@@ -198,7 +218,6 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#multiplicative_expression.
     def visitMultiplicative_expression(self, ctx: LoraParser.Multiplicative_expressionContext):
-        print('Expression multiplicative')
         if ctx.op:
             if ctx.MULT():
                 self.lora.add_operator(Operator.MUL)
@@ -208,12 +227,52 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#primary_expression.
     def visitPrimary_expression(self, ctx: LoraParser.Primary_expressionContext):
-        print('Primary')
-        return self.visitChildren(ctx)
+        if ctx.attribute_operator():
+            self.lora.add_operator(Operator.ATTR)
+            self.visit(ctx.primary_expression())
+            self.visit(ctx.attribute_operator())
+        elif ctx.DOT() and ctx.function_call():
+            original = self.lora.swap_expression_stack([])
+            self.lora.start_expression()
+            self.visit(ctx.primary_expression())
+            self.lora.evaluate_expression()
+            result = self.lora.expression_result()
+            self.this = result
+            self.visit(ctx.function_call())
+            self.lora.swap_expression_stack(original)
+        else:
+            return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#typed_assignment.
     def visitTyped_assignment(self, ctx: LoraParser.Typed_assignmentContext):
         return self.visitChildren(ctx)
+
+    # Visit a parse tree produced by LoraParser#property_assignment.
+    def visitProperty_assignment(self, ctx: LoraParser.Property_assignmentContext):
+        self.lora.start_expression()
+        self.visitChildren(ctx)
+        self.lora.evaluate_expression()
+        if len(self.lora.expression_stack) > 1:
+            self.lora.pack_expression_result()
+        expr_result = self.lora.expression_result()
+
+        ids_chain = [id.getText() for id in ctx.ID()]
+        variable_name = ids_chain[0]
+        new_prop_name = ids_chain[-1]
+        intermediate_props = ids_chain[1:-1]
+
+        variable = self.lora.get_variable(variable_name)
+        if variable is None:
+            raise Exception(f"Variable {variable_name} not initialized")
+        
+        current_var = variable
+        for prop_name in intermediate_props:
+            prop_var = current_var.object.context.find_variable(prop_name)
+            if prop_var is None:
+                raise Exception(f"Cannot find property {prop_name} in {current_var.name}")
+            current_var = prop_var
+
+        current_var.object.context.create_variable(Variable(new_prop_name, expr_result))
 
     # Visit a parse tree produced by LoraParser#assignment.
     def visitAssignment(self, ctx: LoraParser.AssignmentContext):

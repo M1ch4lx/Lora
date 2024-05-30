@@ -1,4 +1,6 @@
 from Variable import *
+import copy
+
 
 class Context:
     def __init__(self):
@@ -13,3 +15,9 @@ class Context:
 
     def variable_exists(self, name):
         return name in self.variables
+
+    def create_copy(self):
+        return copy.deepcopy(self)
+
+    def __str__(self):
+        print(self.variables)

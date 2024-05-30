@@ -1,9 +1,10 @@
 from enum import Enum
 from Function import Function
+from Context import Context
 
 
 class ObjectType(Enum):
-    NONE = 0,
+    USER = 0,
     INT = 1,
     FLOAT = 2,
     BOOLEAN = 3
@@ -17,7 +18,8 @@ class ObjectType(Enum):
 class Object:
     def __init__(self):
         self.value = None
-        self.type = ObjectType.NONE
+        self.type = ObjectType.USER
+        self.context: Context = Context()
 
 
 class Array(Object):
@@ -25,6 +27,9 @@ class Array(Object):
         super().__init__()
         self.value = values
         self.type = ObjectType.ARRAY
+
+    def __str__(self):
+        return str(self.value)
 
 
 class Callback(Object):

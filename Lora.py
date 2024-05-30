@@ -5,6 +5,7 @@ from Variable import *
 from Object import *
 from TypeMarshalling import *
 import math
+import copy
 
 
 class Lora:
@@ -47,11 +48,11 @@ class Lora:
             raise Exception(f"Variable name {name} shadows function")
         var = self.get_variable(name)
         if var is None:
-            self.current_context.create_variable(Variable(name, object))
+            self.current_context.create_variable(Variable(name, copy.deepcopy(object)))
         else:
-            var.object = object
+            var.object = copy.deepcopy(object)
 
-        print(name + ': ' + object.type.name + ' = ' + str(object))
+        # print(name + ': ' + object.type.name + ' = ' + str(object))
 
     def variable_exists(self, name):
         return self.current_context.variable_exists(name)
@@ -70,6 +71,9 @@ class Lora:
 
     def add_value(self, operand):
         self.expression_stack.append(operand)
+
+    def add_id(self, id):
+        self.expression_stack.append(id)
 
     def add_reference(self, name):
         function = self.function_set.find_function(name)
@@ -135,6 +139,11 @@ class Lora:
                 result = Boolean(left_operand and right_operand)
             elif op == Operator.OR:
                 result = Boolean(left_operand or right_operand)
+            elif op == Operator.ATTR:
+                variable = left_operand.context.find_variable(right_operand)
+                if variable is None:
+                    raise Exception(f"Property {right_operand} not found")
+                result = variable.object
         else:
             raise Exception("Invalid operands count")
 

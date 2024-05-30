@@ -15,6 +15,7 @@ class Operator(Enum):
     AND = 10
     OR = 11
     NOT = 12
+    ATTR = 13
 
 
 def operator_operands_count(op):

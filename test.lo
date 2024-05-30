@@ -1,0 +1,17 @@
+vec = {
+    x: 1,
+    y: 2
+};
+
+vec.x = 2;
+
+function move(self, vec)
+{
+    self.x = self.x + vec.x;
+    self.y = self.y + vec.y;
+}
+
+vec.move({ x: 10, y: 0-5 });
+
+print(vec.x);
+print(vec.y);
