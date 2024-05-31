@@ -1,6 +1,6 @@
-vector = { };
+Vector = { };
 
-function vector:zero(self)
+function Vector:zero(self)
 {
     vec = self;
     vec.x = 0;
@@ -8,7 +8,7 @@ function vector:zero(self)
     return vec;
 }
 
-function vector:new(self, x, y)
+function Vector:new(self, x, y)
 {
     vec = self;
     vec.x = x;
@@ -16,13 +16,13 @@ function vector:new(self, x, y)
     return vec;
 }
 
-function vector:move(self, vec)
+function Vector:move(self, vec)
 {
     self.x = self.x + vec.x;
     self.y = self.y + vec.y;
 }
 
-function vector:print(self)
+function Vector:print(self)
 {
     print(self.x);
     print(self.y);
@@ -35,16 +35,4 @@ function move(position, vec)
     return position;
 }
 
-vec = vector.zero();
-vec.move(vector.new(10, 5));
-
-vec.print();
-
-vec = move(vec, {x:0, y:5});
-
-vec.print();
-vec.z = 3;
-
-vec2 = vec;
-vec2.print();
-print(vec2.z);
+return Vector;

@@ -40,3 +40,9 @@ class FunctionSet:
     def find_function(self, function_id) -> Function:
         return self.functions.get(function_id)
 
+    def find_all_of_prototype(self, prototype) -> list[Function]:
+        result = []
+        for fun_id, function in self.functions.items():
+            if fun_id.startswith(f'{prototype}:'):
+                result.append(function)
+        return result

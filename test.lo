@@ -1,50 +1,10 @@
-vector = { };
+import test3 as Vec;
 
-function vector:zero(self)
-{
-    vec = self;
-    vec.x = 0;
-    vec.y = 0;
-    return vec;
-}
+vec = Vec.zero();
 
-function vector:new(self, x: Number, y:Number)
-{
-    vec = self;
-    vec.x = x;
-    vec.y = y;
-    return vec;
-}
+x = 2;
+y = 3;
 
-function vector:move(self, vec)
-{
-    self.x = self.x + vec.x;
-    self.y = self.y + vec.y;
-}
-
-function vector:print(self)
-{
-    print(self.x);
-    print(self.y);
-}
-
-function move(position, vec)
-{
-    position.x = position.x + vec.x;
-    position.y = position.y + vec.y;
-    return position;
-}
-
-vec = vector.zero();
-vec.move(vector.new(10, 5));
+vec = Vec.new(x, y);
 
 vec.print();
-
-vec = move(vec, {x:0, y:5});
-
-vec.print();
-vec.z = 3;
-
-vec2 = vec;
-vec2.print();
-print(vec2.z);

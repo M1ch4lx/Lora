@@ -56,7 +56,9 @@ COMMENT : '#' ~[\r\n]* -> skip ;
 
 program : (import_statement SEMI)* (statement | function_declaration)+ ;
 
-import_statement : IMPORT ID (AS ID)? ;
+alias : AS ID ;
+
+import_statement : IMPORT ID alias? ;
 
 typed_variable : ID COLON ID ;
 

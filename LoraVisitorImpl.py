@@ -1,3 +1,4 @@
+from LoraLexer import LoraLexer
 from LoraVisitor import LoraVisitor
 from antlr4 import *
 if "." in __name__:
@@ -27,9 +28,61 @@ class LoraVisitorImpl(LoraVisitor):
     def visitProgram(self, ctx: LoraParser.ProgramContext):
         self.visitChildren(ctx)
 
+    # Visit a parse tree produced by LoraParser#alias.
+    def visitAlias(self, ctx: LoraParser.AliasContext):
+        return ctx.ID().getText()
+
     # Visit a parse tree produced by LoraParser#import_statement.
     def visitImport_statement(self, ctx: LoraParser.Import_statementContext):
-        return self.visitChildren(ctx)
+        module_name = ctx.ID().getText()
+        alias = module_name
+        if ctx.alias():
+            alias = self.visit(ctx.alias())
+
+        if alias in Context.BUILTIN_PROTOTYPES:
+            raise Exception(f'Illegal module name: {alias}')
+
+        if self.lora.variable_exists(alias):
+            if ctx.alias():
+                raise Exception(f'Provided alias {alias} is already taken, module might be already imported')
+            raise Exception(f'Module {alias} already imported')
+
+        file_path = module_name + '.lo'
+
+        input_stream = FileStream(file_path)
+        lexer = LoraLexer(input_stream)
+
+        token_stream = CommonTokenStream(lexer)
+        parser = LoraParser(token_stream)
+
+        tree = parser.program()
+
+        module = Lora()
+
+        visitor = LoraVisitorImpl(module)
+
+        try:
+            result = visitor.visit(tree)
+            raise Exception('No return statement in imported module')
+        except StopExecution as e:
+            imported_object = module.expression_result()
+            # TODO: recursive scan for all imported prototypes
+            functions = module.function_set.find_all_of_prototype(imported_object.prototype_name)
+
+            for fun in functions:
+                fun.signature.return_type = 'Any'
+                fun.signature.name = fun.signature.name.replace(imported_object.prototype_name + ':', alias + ':')
+                fun.signature.id = get_function_id(fun.signature.name)
+                for arg in fun.signature.args:
+                    arg.type = ObjectType.ANY
+                    arg.prototype = 'Any'
+            for fun in functions:
+                self.lora.function_set.add_function(fun)
+            imported_object.prototype_name = alias
+            self.lora.assign_variable(alias, imported_object)
+        except Exception as e:
+            print(f'Cannot import module {module_name}')
+            print(e)
 
     # Visit a parse tree produced by LoraParser#typed_variable.
     def visitTyped_variable(self, ctx: LoraParser.Typed_variableContext):
@@ -477,4 +530,4 @@ class LoraVisitorImpl(LoraVisitor):
     def visitStatement(self, ctx: LoraParser.StatementContext):
         return self.visitChildren(ctx)
 
-del LoraParser
+# del LoraParser
