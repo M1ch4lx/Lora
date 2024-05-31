@@ -1,0 +1,6 @@
+lib = {}
+
+function lib:getInt()
+{
+    return
+}

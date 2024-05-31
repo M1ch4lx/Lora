@@ -3,9 +3,13 @@ from Object import *
 
 class Marshal:
     def lora_to_python(self, o: Object):
-        if o.type == ObjectType.FLOAT or o.type == ObjectType.INT:
+        if o is None:
+            return None
+        if o.type == ObjectType.NUMBER:
             return o.value
         if o.type == ObjectType.BOOLEAN:
+            return o.value
+        if o.type == ObjectType.STRING:
             return o.value
         if o.type == ObjectType.TUPLE or o.type == ObjectType.ARRAY:
             return [self.lora_to_python(el) for el in o.value]
@@ -14,10 +18,12 @@ class Marshal:
         raise Exception(f'Cannot convert provided type to python object: {o.type.name}')
 
     def python_to_lora(self, value):
+        if value is None:
+            return None
         if isinstance(value, float):
-            return Number(ObjectType.FLOAT, value)
+            return Number(float(value))
         if isinstance(value, int):
-            return Number(ObjectType.FLOAT, value)
+            return Number(int(value))
         if isinstance(value, tuple):
             return Tuple([self.python_to_lora(el) for el in value])
         if isinstance(value, bool):

@@ -13,6 +13,10 @@ from Context import *
 from Variable import *
 
 
+class StopExecution(Exception):
+    pass
+
+
 class LoraVisitorImpl(LoraVisitor):
 
     def __init__(self, lora: Lora):
@@ -29,11 +33,20 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#typed_variable.
     def visitTyped_variable(self, ctx: LoraParser.Typed_variableContext):
-        return self.visitChildren(ctx)
+        return ctx.ID(0).getText(), ctx.ID(1).getText()
 
     # Visit a parse tree produced by LoraParser#value.
     def visitValue(self, ctx: LoraParser.ValueContext):
-        self.lora.add_value(Number(ObjectType.FLOAT, float(ctx.getText())))
+        if ctx.FLOAT_VALUE():
+            self.lora.add_value(Number(float(ctx.FLOAT_VALUE().getText())))
+        elif ctx.INTEGER_VALUE():
+            self.lora.add_value(Number(int(ctx.INTEGER_VALUE().getText())))
+        elif ctx.BOOL_VALUE():
+            self.lora.add_value(Boolean(ctx.BOOL_VALUE().getText() == 'True'))
+        elif ctx.STRING_VALUE():
+            self.lora.add_value(String(ctx.STRING_VALUE().getText()[1:-1]))
+        elif ctx.NONE():
+            self.lora.add_value(None)
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#variable_reference.
@@ -54,6 +67,8 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#function_call.
     def visitFunction_call(self, ctx: LoraParser.Function_callContext):
+        self.lora.call_level += 1
+
         this_object = self.this
         self.this = None
 
@@ -91,7 +106,10 @@ class LoraVisitorImpl(LoraVisitor):
         function_context = Context()
 
         for index, arg in enumerate(evaluated_args.value):
-            var = Variable(function.signature.args[index].name, arg)
+            arg_signature = function.signature.args[index]
+            if arg_signature.prototype != 'Any' and arg_signature.prototype != arg.prototype_name:
+                raise Exception(f'Expected argument of type {arg_signature.prototype} at position {index}')
+            var = Variable(arg_signature.name, arg)
             function_context.create_variable(var)
 
         original_context = self.lora.swap_context(function_context)
@@ -114,7 +132,6 @@ class LoraVisitorImpl(LoraVisitor):
         else:
             self.visit(function.parser_context)
 
-
         if self.lora.is_expression_stack_empty():
             return_value = Object()
         else:
@@ -123,12 +140,23 @@ class LoraVisitorImpl(LoraVisitor):
         self.lora.swap_expression_stack(original_expression_stack)
         self.lora.swap_context(original_context)
 
-        self.lora.add_value(return_value)
+        self.lora.call_level -= 1
 
+        if function.signature.return_type != 'Any' and function.signature.return_type != return_value.prototype_name:
+            raise Exception(f"Invalid return object type, expected {function.signature.return_type}")
+
+        self.lora.add_value(return_value)
 
     # Visit a parse tree produced by LoraParser#index_operator.
     def visitIndex_operator(self, ctx: LoraParser.Index_operatorContext):
-        return self.visitChildren(ctx)
+        original_expression_stack = self.lora.swap_expression_stack([])
+        self.lora.start_expression()
+        self.visit(ctx.tuple_())
+        evaluated_args: Tuple = self.lora.expression_result()
+        self.lora.swap_expression_stack(original_expression_stack)
+        for arg in reversed(evaluated_args.value):
+            self.lora.add_operator(Operator.INDEX)
+            self.lora.add_value(arg)
 
     # Visit a parse tree produced by LoraParser#array.
     def visitArray(self, ctx: LoraParser.ArrayContext):
@@ -229,7 +257,10 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#primary_expression.
     def visitPrimary_expression(self, ctx: LoraParser.Primary_expressionContext):
-        if ctx.attribute_operator():
+        if ctx.index_operator():
+            self.visit(ctx.index_operator())
+            self.visit(ctx.primary_expression())
+        elif ctx.attribute_operator():
             self.lora.add_operator(Operator.ATTR)
             self.visit(ctx.primary_expression())
             self.visit(ctx.attribute_operator())
@@ -247,15 +278,20 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#typed_assignment.
     def visitTyped_assignment(self, ctx: LoraParser.Typed_assignmentContext):
-        return self.visitChildren(ctx)
+        variable_name, prototype_name = self.visit(ctx.typed_variable())
+        self.lora.start_expression()
+        self.visit(ctx.expression())
+        self.lora.evaluate_expression()
+        expr_result = self.lora.expression_result()
+        if prototype_name != 'Any' and expr_result.prototype_name != prototype_name:
+            raise Exception(f'Expected object of type {prototype_name}')
+        self.lora.assign_variable(variable_name, expr_result)
 
     # Visit a parse tree produced by LoraParser#property_assignment.
     def visitProperty_assignment(self, ctx: LoraParser.Property_assignmentContext):
         self.lora.start_expression()
         self.visitChildren(ctx)
         self.lora.evaluate_expression()
-        if len(self.lora.expression_stack) > 1:
-            self.lora.pack_expression_result()
         expr_result = self.lora.expression_result()
         if expr_result.type == ObjectType.CALLBACK:
             raise Exception('Assigning callback to property is forbidden')
@@ -280,7 +316,6 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#assignment.
     def visitAssignment(self, ctx: LoraParser.AssignmentContext):
-        a = ctx.getText()
         self.lora.start_expression()
         children = self.visitChildren(ctx)
         self.lora.evaluate_expression()
@@ -303,7 +338,10 @@ class LoraVisitorImpl(LoraVisitor):
     # Visit a parse tree produced by LoraParser#function_parameter.
     def visitFunction_parameter(self, ctx: LoraParser.Function_parameterContext):
         if ctx.ID():
-            return ctx.ID().getText()
+            return ctx.ID().getText(), 'Any'
+        if ctx.typed_variable():
+            return self.visit(ctx.typed_variable())
+
 
     # Visit a parse tree produced by LoraParser#function_parameters_list.
     def visitFunction_parameters_list(self, ctx: LoraParser.Function_parameters_listContext):
@@ -313,6 +351,10 @@ class LoraVisitorImpl(LoraVisitor):
             if param is not None:
                 parameters.append(param)
         return parameters
+
+    # Visit a parse tree produced by LoraParser#type_requirement.
+    def visitType_requirement(self, ctx: LoraParser.Type_requirementContext):
+        return ctx.ID().getText()
 
     # Visit a parse tree produced by LoraParser#function_declaration.
     def visitFunction_declaration(self, ctx: LoraParser.Function_declarationContext):
@@ -329,8 +371,10 @@ class LoraVisitorImpl(LoraVisitor):
             function_name = ids[0].getText()
         parameters = self.visit(ctx.function_parameters_list())
         code_block = ctx.code_block()
-        parameters = [FunctionArgument(i, param) for i, param in enumerate(parameters)]
+        parameters = [FunctionArgument(i, param[0], prototype=param[1]) for i, param in enumerate(parameters)]
         signature = FunctionSignature(function_name, parameters)
+        if ctx.type_requirement():
+            signature.return_type = self.visit(ctx.type_requirement())
         function = Function(signature, is_python_function=False, parser_context=code_block)
         self.lora.function_set.add_function(function)
 
@@ -340,9 +384,12 @@ class LoraVisitorImpl(LoraVisitor):
         self.visitChildren(ctx)
 
         if len(self.lora.expression_stack) == 0:
-            raise Exception('Empty expression in return statement')
+            self.lora.add_value(None)
 
         self.lora.evaluate_expression()
+
+        if self.lora.call_level == 0:
+            raise StopExecution()
 
     # Visit a parse tree produced by LoraParser#break_statement.
     def visitBreak_statement(self, ctx: LoraParser.Break_statementContext):

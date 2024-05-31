@@ -1,8 +1,9 @@
 class FunctionArgument:
-    def __init__(self, index, name, type=None):
+    def __init__(self, index, name, prototype='Any', type=None):
         self.name = name
-        self.type = type
+        self.prototype = prototype
         self.index = index
+        self.type = type
 
 
 def get_function_id(name):
@@ -15,6 +16,7 @@ class FunctionSignature:
         self.args_count = len(args)
         self.args = args
         self.id = get_function_id(self.name)
+        self.return_type = 'Any'
 
 
 class Function:

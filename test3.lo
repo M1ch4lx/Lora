@@ -8,7 +8,7 @@ function vector:zero(self)
     return vec;
 }
 
-function vector:new(self, x: Number, y:Number)
+function vector:new(self, x, y)
 {
     vec = self;
     vec.x = x;

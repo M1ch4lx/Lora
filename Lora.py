@@ -15,15 +15,16 @@ class Lora:
         self.expression_stack: list = []
         self.marshal: Marshal = Marshal()
         self.breaking_loop = False
+        self.call_level = 0
 
         self.add_python_function(
             'print', [ObjectType.ANY], lambda args: print(args[0]))
 
         self.add_python_function(
-            'sin', [ObjectType.FLOAT], lambda args: math.sin(args[0]))
+            'sin', [ObjectType.NUMBER], lambda args: math.sin(args[0]))
 
     def add_python_function(self, name, args, callback):
-        args = [FunctionArgument(i, str(i), type) for i, type in enumerate(args)]
+        args = [FunctionArgument(i, str(i), prototype=object_type_prototype(type), type=type) for i, type in enumerate(args)]
         signature = FunctionSignature(name, args)
         function = Function(signature, is_python_function=True, python_callback=callback)
         if self.function_set.function_exists(name):
@@ -144,6 +145,12 @@ class Lora:
                 if variable is None:
                     raise Exception(f"Property {right_operand} not found")
                 result = variable.object
+            elif op == Operator.INDEX:
+                if left_operand.type != ObjectType.NUMBER or not isinstance(left_operand.value, int):
+                    raise Exception("Index must be an integer value")
+                if right_operand.type != ObjectType.ARRAY:
+                    raise Exception("Index operator expects array object")
+                result = right_operand[left_operand.value]
         else:
             raise Exception("Invalid operands count")
 
@@ -173,7 +180,7 @@ class Lora:
 
     def is_expression_evaluated(self):
         for elem in self.expression_stack:
-            if not isinstance(elem, Object):
+            if not isinstance(elem, Object) and elem is not None:
                 return False
         return True
 

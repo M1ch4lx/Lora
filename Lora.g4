@@ -73,7 +73,7 @@ tuple : expression (COMMA expression)*;
 
 function_call : ID LPAREN tuple? RPAREN ;
 
-index_operator : LSQUARE expression (COMMA expression)* RSQUARE ;
+index_operator : LSQUARE tuple RSQUARE ;
 
 array : LSQUARE (expression (COMMA expression)*)? RSQUARE ;
 
@@ -138,9 +138,11 @@ function_parameter :
 
 function_parameters_list : LPAREN ( function_parameter (COMMA function_parameter)* )? RPAREN ;
 
-function_declaration : FUNCTION (ID COLON)? ID function_parameters_list code_block ;
+type_requirement : COLON ID ;
 
-return_statement : RETURN expression | RETURN tuple ;
+function_declaration : FUNCTION (ID COLON)? ID function_parameters_list type_requirement? code_block ;
+
+return_statement : RETURN expression | RETURN tuple | RETURN;
 
 break_statement : BREAK ;
 
