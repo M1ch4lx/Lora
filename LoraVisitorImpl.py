@@ -47,7 +47,7 @@ class LoraVisitorImpl(LoraVisitor):
                 raise Exception(f'Provided alias {alias} is already taken, module might be already imported')
             raise Exception(f'Module {alias} already imported')
 
-        file_path = module_name + '.lo'
+        file_path = module_name + '.lora'
 
         input_stream = FileStream(file_path)
         lexer = LoraLexer(input_stream)
