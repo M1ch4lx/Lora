@@ -71,6 +71,9 @@ class Array(Object):
     def __getitem__(self, item):
         return self.value[item]
 
+    def __setitem__(self, key, value):
+        self.value[key] = value
+
 
 class Callback(Object):
     def __init__(self, function: Function):

@@ -23,8 +23,13 @@ class Lora:
         self.add_python_function(
             'sin', [ObjectType.NUMBER], lambda args: math.sin(args[0]))
 
-    def add_python_function(self, name, args, callback):
+        self.add_python_function(
+            'size', [ObjectType.ARRAY], lambda args: len(args[0]), prototype='Array')
+
+    def add_python_function(self, name, args, callback, prototype=None):
         args = [FunctionArgument(i, str(i), prototype=object_type_prototype(type), type=type) for i, type in enumerate(args)]
+        if prototype is not None:
+            name = prototype + ':' + name
         signature = FunctionSignature(name, args)
         function = Function(signature, is_python_function=True, python_callback=callback)
         if self.function_set.function_exists(name):

@@ -207,9 +207,12 @@ class LoraVisitorImpl(LoraVisitor):
         self.visit(ctx.tuple_())
         evaluated_args: Tuple = self.lora.expression_result()
         self.lora.swap_expression_stack(original_expression_stack)
+        indexes = []
         for arg in reversed(evaluated_args.value):
             self.lora.add_operator(Operator.INDEX)
             self.lora.add_value(arg)
+            indexes.append(arg.value)
+        return list(reversed(indexes))
 
     # Visit a parse tree produced by LoraParser#array.
     def visitArray(self, ctx: LoraParser.ArrayContext):
@@ -329,6 +332,28 @@ class LoraVisitorImpl(LoraVisitor):
         else:
             return self.visitChildren(ctx)
 
+    # Visit a parse tree produced by LoraParser#indexed_assignment.
+    def visitIndexed_assignment(self, ctx: LoraParser.Indexed_assignmentContext):
+        var_name = ctx.ID().getText()
+        var = self.lora.get_variable(var_name)
+        if var is None:
+            raise Exception(f"Undefined variable {var_name}")
+        if var.object.type != ObjectType.ARRAY:
+            raise Exception(f"Expected {var_name} to be array")
+        indexes = self.visit(ctx.index_operator())
+        self.lora.start_expression()
+        if ctx.expression():
+            self.visit(ctx.expression())
+        elif ctx.tuple_():
+            self.visit(ctx.tuple_())
+        self.lora.evaluate_expression()
+        result = self.lora.expression_result()
+        current = var.object
+        for i in indexes[:-1]:
+            current = current[i]
+        last = indexes[-1]
+        current[last] = result
+
     # Visit a parse tree produced by LoraParser#typed_assignment.
     def visitTyped_assignment(self, ctx: LoraParser.Typed_assignmentContext):
         variable_name, prototype_name = self.visit(ctx.typed_variable())
@@ -394,7 +419,6 @@ class LoraVisitorImpl(LoraVisitor):
             return ctx.ID().getText(), 'Any'
         if ctx.typed_variable():
             return self.visit(ctx.typed_variable())
-
 
     # Visit a parse tree produced by LoraParser#function_parameters_list.
     def visitFunction_parameters_list(self, ctx: LoraParser.Function_parameters_listContext):
