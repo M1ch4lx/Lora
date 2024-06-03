@@ -1,4 +1,14 @@
 # Lora
+## Uruchamianie
+
+### Wymagania
+- zainstalowane narzędzie antlr
+
+### Generowanie parsera
+```antlr4 Lora.g4 -Dlanguage=Python3 -visitor```
+
+### Uruchamianie
+```python -m LoraRun <nazwa_pliku>```
 
 ## Tokens
 ```
