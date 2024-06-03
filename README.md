@@ -10,7 +10,7 @@
 ### Uruchamianie
 ```python -m LoraRun <nazwa_pliku>```
 
-## Tokens
+## Tokeny
 ```
 IF : 'if' ;
 FOR : 'for' ;
@@ -67,7 +67,7 @@ WS : [ \t\r\n]+ -> skip ;
 COMMENT : '#' ~[\r\n]* -> skip ;
 ```
 
-## Grammar
+## Gramatyka
 ```
 program : (import_statement SEMI)* (statement | function_declaration)+ ;
 
@@ -187,7 +187,17 @@ simple_statement :
 statement : if_statement | simple_statement SEMI | for_loop_statement | while_loop_statement ;
 ```
 
-## Example code
+## Kluczowe informacje
+- W Lora każde przypisanie jest kopią
+- Lora umożliwia dynamiczne tworzenie obiektów
+- W Lora nie ma referencji
+- Możliwe jest dodawanie metod do obiektów
+- Lore można łatwo rozwijać poprzez pisanie nowych funkcji w Pythonie
+- Lora ma zaimplementowany konwerter między typami Pythonowymi a tymi z Lora
+- Typy danych: Number, Tuple, Array, Callback, String, Boolean, Object
+- Jeśli chodzi o wizualizacje na ten moment można jedynie rysować wykres funkcji
+
+## Przykładowy kod
 ### Vector.lo
 ```
 Vector = { };
