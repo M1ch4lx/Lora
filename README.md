@@ -223,61 +223,87 @@ return Vector;
 ```
 import Vector as vec;
 
-function sum(array: Array): Number
+function linspace(begin, end, count)
 {
-    result = 0;
-    for(e in array)
+    length = end - begin;
+    step = length / (count + 1);
+    array = [];
+    current = begin + step;
+    for(i in range(0, count))
     {
-        result = result + e;
+        array = array + [current];
+        current = current + step;
     }
-    return result;
+    return array;
 }
 
-test_vec: vec = vec.zero();
-
-print("Printing test vec");
-test_vec.print();
-
-print(sum([1,2,3]));
-
-callback: Callback = sum;
-
-result = callback([1,2,4]);
-
-print(result);
-
-player = {
-    name: "Player1",
-    position: vec.new(10, 13)
-};
-
-player.hp = 0.78;
-
-function player:is_alive(self)
+function calculate_values(args, func)
 {
-    return self.hp > 0;
+    values = args;
+    for(pair in enumerate(args))
+    {
+        i, arg = pair;
+        values[i] = func(arg);
+    }
+    return values;
 }
 
-while(player.is_alive())
+function identity(x)
 {
-    print("Player is alive");
-    loss = 0.3;
-    player.hp = player.hp - loss;
-    print(player.hp);
+    return x;
 }
 
-print("Player died");
-
-print_player_data = True;
-
-if(print_player_data)
+function linear(x)
 {
-    print("Stats:");
-    print(player.name);
-    player.position.print();
+    return 2*x + 5;
 }
-else
+
+function quadratic(x)
 {
-    print("Game over");
+    return 2*x*x + 5;
 }
+
+x = linspace(0, 100, 100);
+
+#y = calculate_values(x, identity);
+#y = calculate_values(x, linear);
+y = calculate_values(x, quadratic);
+
+plot(x, y);
+
+function bubbleSort(array: Array) {
+    n = array.size();
+    for (i in range(0, n-1)) {
+        for (j in range(0, n-(i+1))) {
+            if (array[j] > array[j+1]) {
+                temp = array[j];
+                array[j] = array[j+1];
+                array[j+1] = temp;
+            }
+        }
+    }
+    return array;
+}
+
+array = bubbleSort([1, 3, 2, 1, 2, 7, 5, 9, 10, 2]);
+print(array);
+# bubbleSort(123);
+
+function fibonacci_recursive(n: Number) : Number {
+    if (n <= 1) {
+        return n;
+    } else {
+        return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2);
+    }
+}
+
+result_recursive = [];
+for (i in range(0, 10)) {
+    result_recursive = result_recursive + [fibonacci_recursive(i)];
+}
+
+print(result_recursive);
+
+v = vec.new(0,0);
+v.print();
 ```
