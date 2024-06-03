@@ -38,6 +38,12 @@ class Object:
         self.context: Context = Context()
         self.prototype_name = 'Object'
 
+    def additive_neutral_element(self):
+        pass
+
+    def multiplicative_neutral_element(self):
+        pass
+
 
 class String(Object):
     def __init__(self, string):
@@ -73,6 +79,9 @@ class Array(Object):
 
     def __setitem__(self, key, value):
         self.value[key] = value
+
+    def __add__(self, other):
+        return Array(self.value + other.value)
 
 
 class Callback(Object):
@@ -133,6 +142,12 @@ class Number(Object):
         self.type = ObjectType.NUMBER
         self.value = value
         self.prototype_name = 'Number'
+
+    def additive_neutral_element(self):
+        return Number(0)
+
+    def multiplicative_neutral_element(self):
+        return Number(1)
 
     def __str__(self):
         return str(self.value)

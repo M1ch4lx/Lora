@@ -23,6 +23,7 @@ class LoraVisitorImpl(LoraVisitor):
     def __init__(self, lora: Lora):
         self.lora = lora
         self.this: Object = None
+        self.current_statement_line = ''
 
     # Visit a parse tree produced by LoraParser#program.
     def visitProgram(self, ctx: LoraParser.ProgramContext):
@@ -82,7 +83,7 @@ class LoraVisitorImpl(LoraVisitor):
             self.lora.assign_variable(alias, imported_object)
         except Exception as e:
             print(f'Cannot import module {module_name}')
-            print(e)
+            print(f'In line {visitor.current_statement_line}: {e}')
 
     # Visit a parse tree produced by LoraParser#typed_variable.
     def visitTyped_variable(self, ctx: LoraParser.Typed_variableContext):
@@ -382,7 +383,7 @@ class LoraVisitorImpl(LoraVisitor):
         variable = self.lora.get_variable(variable_name)
         if variable is None:
             raise Exception(f"Variable {variable_name} not initialized")
-        
+
         current_var = variable
         for prop_name in intermediate_props:
             prop_var = current_var.object.context.find_variable(prop_name)
@@ -457,6 +458,7 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#return_statement.
     def visitReturn_statement(self, ctx: LoraParser.Return_statementContext):
+        self.current_statement_line = ctx.start.line
         self.lora.start_expression()
         self.visitChildren(ctx)
 
@@ -470,12 +472,14 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#break_statement.
     def visitBreak_statement(self, ctx: LoraParser.Break_statementContext):
+        self.current_statement_line = ctx.start.line
         if self.lora.current_context.loop_count > 0:
             self.lora.breaking_loop = True
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#while_loop_statement.
     def visitWhile_loop_statement(self, ctx: LoraParser.While_loop_statementContext):
+        self.current_statement_line = ctx.start.line
         self.lora.current_context.loop_count += 1
         while True:
             self.lora.start_expression()
@@ -499,6 +503,7 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#for_loop_statement.
     def visitFor_loop_statement(self, ctx: LoraParser.For_loop_statementContext):
+        self.current_statement_line = ctx.start.line
         self.lora.start_expression()
         self.visit(ctx.expression())
         self.lora.evaluate_expression()
@@ -517,6 +522,7 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#code_block.
     def visitCode_block(self, ctx: LoraParser.Code_blockContext):
+        self.current_statement_line = ctx.start.line
         for statement in ctx.statement():
             if self.lora.breaking_loop:
                 break
@@ -524,7 +530,7 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#if_statement.
     def visitIf_statement(self, ctx: LoraParser.If_statementContext):
-        a = ctx.getText()
+        self.current_statement_line = ctx.start.line
         self.lora.start_expression()
         self.visit(ctx.expression())
         self.lora.evaluate_expression()
@@ -538,10 +544,12 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#else_statement.
     def visitElse_statement(self, ctx: LoraParser.Else_statementContext):
+        self.current_statement_line = ctx.start.line
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LoraParser#simple_statement.
     def visitSimple_statement(self, ctx: LoraParser.Simple_statementContext):
+        self.current_statement_line = ctx.start.line
         if ctx.expression():
             self.lora.start_expression()
             children = self.visitChildren(ctx)
@@ -552,6 +560,7 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#statement.
     def visitStatement(self, ctx: LoraParser.StatementContext):
+        self.current_statement_line = ctx.start.line
         return self.visitChildren(ctx)
 
 # del LoraParser

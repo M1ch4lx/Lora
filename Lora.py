@@ -21,6 +21,9 @@ class Lora:
             'print', [ObjectType.ANY], lambda args: print(args[0]))
 
         self.add_python_function(
+            'range', [ObjectType.NUMBER, ObjectType.NUMBER], lambda args: list(range(args[0], args[1])))
+
+        self.add_python_function(
             'sin', [ObjectType.NUMBER], lambda args: math.sin(args[0]))
 
         self.add_python_function(

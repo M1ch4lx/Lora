@@ -30,4 +30,4 @@ try:
 except StopExecution as e:
     print(lora.expression_result())
 except Exception as e:
-    print(e)
+    print(f'In line {visitor.current_statement_line}: {e}')
