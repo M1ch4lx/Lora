@@ -16,7 +16,7 @@ function Vector:new(self, x, y)
     return vec;
 }
 
-function Vector:move(self, vec)
+function Vector:add(self, vec)
 {
     self.x = self.x + vec.x;
     self.y = self.y + vec.y;
@@ -26,13 +26,6 @@ function Vector:print(self)
 {
     print(self.x);
     print(self.y);
-}
-
-function move(position, vec)
-{
-    position.x = position.x + vec.x;
-    position.y = position.y + vec.y;
-    return position;
 }
 
 return Vector;

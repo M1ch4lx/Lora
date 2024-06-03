@@ -139,6 +139,8 @@ assignment : ID (COMMA ID)* ASSIGN (expression | tuple) |
 
 property_assignment : ID (DOT ID)+ ASSIGN (expression | tuple) ;
 
+indexed_assignment : ID index_operator ASSIGN (expression | tuple) ;
+
 function_parameter :
     ID |
     typed_variable ;
@@ -167,6 +169,7 @@ simple_statement :
     typed_assignment |
     property_assignment |
     assignment |
+    indexed_assignment |
     break_statement |
     return_statement |
     expression ;

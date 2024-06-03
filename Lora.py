@@ -6,6 +6,7 @@ from Object import *
 from TypeMarshalling import *
 import math
 import copy
+import matplotlib.pyplot as plt
 
 
 class Lora:
@@ -17,8 +18,22 @@ class Lora:
         self.breaking_loop = False
         self.call_level = 0
 
+        def plot(args):
+            x = args[0]
+            y = args[1]
+            plt.plot(x, y)
+            plt.xlabel('X Axis')
+            plt.ylabel('Y Axis')
+            plt.show()
+
+        self.add_python_function(
+            'plot', [ObjectType.ARRAY, ObjectType.ARRAY], plot)
+
         self.add_python_function(
             'print', [ObjectType.ANY], lambda args: print(args[0]))
+
+        self.add_python_function(
+            'enumerate', [ObjectType.ARRAY], lambda args: list(enumerate(args[0])))
 
         self.add_python_function(
             'range', [ObjectType.NUMBER, ObjectType.NUMBER], lambda args: list(range(args[0], args[1])))

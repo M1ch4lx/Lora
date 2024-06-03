@@ -14,7 +14,7 @@ class Marshal:
         if o.type == ObjectType.TUPLE or o.type == ObjectType.ARRAY:
             return [self.lora_to_python(el) for el in o.value]
         if o.type == ObjectType.CALLBACK:
-            return o.value.python_callback
+            return o.value
         raise Exception(f'Cannot convert provided type to python object: {o.type.name}')
 
     def python_to_lora(self, value):

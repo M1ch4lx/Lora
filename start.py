@@ -1,6 +1,11 @@
 from manimlib import *
 import numpy as np
 from scipy.optimize import fsolve
+from Lora import Lora
+from antlr4 import *
+from LoraLexer import LoraLexer
+from LoraParser import LoraParser
+from LoraVisitorImpl import LoraVisitorImpl, StopExecution
 
 class PlotFunctions(Scene):
     def __init__(self, functions, highlight_intersections=False, highlight_zeros=False, highlight_extremes=False, draw_derivatives=False, **kwargs):
@@ -129,10 +134,30 @@ def func3(x):
 
 functions = [
     (func1, RED, "3x^2 + 1"),
-    (func2, GREEN, "2x + 1"),
-    (func3, YELLOW, "sin(x)")
+    #(func2, GREEN, "2x + 1"),
+    #(func3, YELLOW, "sin(x)")
 ]
 
 class PlotFunctionsScene(PlotFunctions):
     def __init__(self, **kwargs):
-        super().__init__(functions, highlight_intersections=True, highlight_zeros=True, highlight_extremes=True, draw_derivatives=True, **kwargs)
+        input_stream = FileStream('test.lora')
+        lexer = LoraLexer(input_stream)
+
+        token_stream = CommonTokenStream(lexer)
+        parser = LoraParser(token_stream)
+
+        tree = parser.program()
+        # print(tree.toStringTree(recog=parser))
+
+        lora = Lora()
+
+        visitor = LoraVisitorImpl(lora)
+
+        try:
+            result = visitor.visit(tree)
+        except StopExecution as e:
+            print(lora.expression_result())
+        except Exception as e:
+            print(f'In line {visitor.current_statement_line}: {e}')
+
+        super().__init__(functions, highlight_intersections=True, highlight_zeros=True, highlight_extremes=True, draw_derivatives=False, **kwargs)
