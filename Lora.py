@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import LoraVisitor
 from ActionStack import *
 
+
 class Lora:
     def __init__(self, visitor: LoraVisitor = None):
         self.function_set: FunctionSet = FunctionSet()
