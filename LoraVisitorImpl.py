@@ -12,6 +12,7 @@ from Operator import *
 from Function import *
 from Context import *
 from Variable import *
+from ActionStack import *
 
 
 class StopExecution(Exception):
@@ -25,6 +26,15 @@ class LoraVisitorImpl(LoraVisitor):
         self.lora.visitor = self
         self.this: Object = None
         self.current_statement_line = ''
+
+    def evaluate_in_new_expression(self, nodes, primary_expression=True):
+        builder = build_action()
+        for node in nodes:
+            builder.add(self.visit, node)
+        expression = builder.build()
+        result = self.lora.perform_expression(expression, primary_expression)
+        self.lora.add_value(result)
+
 
     # Visit a parse tree produced by LoraParser#program.
     def visitProgram(self, ctx: LoraParser.ProgramContext):
@@ -250,7 +260,6 @@ class LoraVisitorImpl(LoraVisitor):
                 Variable(name, value))
         self.lora.add_value(user_object)
 
-
     # Visit a parse tree produced by LoraParser#attribute_operator.
     def visitAttribute_operator(self, ctx: LoraParser.Attribute_operatorContext):
         self.lora.add_id(ctx.ID().getText())
@@ -258,28 +267,33 @@ class LoraVisitorImpl(LoraVisitor):
 
     # Visit a parse tree produced by LoraParser#expression.
     def visitExpression(self, ctx: LoraParser.ExpressionContext):
-        return self.visitChildren(ctx)
+        self.evaluate_in_new_expression([ctx.boolean_expression()], primary_expression=False)
 
     # Visit a parse tree produced by LoraParser#boolean_expression.
     def visitBoolean_expression(self, ctx: LoraParser.Boolean_expressionContext):
+        self.evaluate_in_new_expression([ctx.boolean_term()], primary_expression=False)
         if ctx.OR():
             self.lora.add_operator(Operator.OR)
-        return self.visitChildren(ctx)
+            self.visit(ctx.boolean_expression())
 
     # Visit a parse tree produced by LoraParser#boolean_term.
     def visitBoolean_term(self, ctx: LoraParser.Boolean_termContext):
+        self.evaluate_in_new_expression([ctx.boolean_factor()], primary_expression=False)
         if ctx.AND():
             self.lora.add_operator(Operator.AND)
-        return self.visitChildren(ctx)
+            self.visit(ctx.boolean_term())
 
     # Visit a parse tree produced by LoraParser#boolean_factor.
     def visitBoolean_factor(self, ctx: LoraParser.Boolean_factorContext):
         if ctx.NOT():
             self.lora.add_operator(Operator.NOT)
-        return self.visitChildren(ctx)
+            self.evaluate_in_new_expression([ctx.boolean_factor()], primary_expression=False)
+        else:
+            self.evaluate_in_new_expression([ctx.relational_expression()], primary_expression=False)
 
     # Visit a parse tree produced by LoraParser#relational_expression.
     def visitRelational_expression(self, ctx: LoraParser.Relational_expressionContext):
+        self.evaluate_in_new_expression([ctx.additive_expression()], primary_expression=False)
         if ctx.op:
             if ctx.EQ():
                 self.lora.add_operator(Operator.EQ)
@@ -293,35 +307,49 @@ class LoraVisitorImpl(LoraVisitor):
                 self.lora.add_operator(Operator.GT)
             elif ctx.GTE():
                 self.lora.add_operator(Operator.GTE)
-        return self.visitChildren(ctx)
+            self.visit(ctx.relational_expression())
 
     # Visit a parse tree produced by LoraParser#additive_expression.
     def visitAdditive_expression(self, ctx: LoraParser.Additive_expressionContext):
+        self.evaluate_in_new_expression([ctx.multiplicative_expression()], primary_expression=False)
         if ctx.op:
             if ctx.PLUS():
                 self.lora.add_operator(Operator.ADD)
             if ctx.MINUS():
                 self.lora.add_operator(Operator.SUB)
-        return self.visitChildren(ctx)
+            self.visit(ctx.additive_expression())
 
     # Visit a parse tree produced by LoraParser#multiplicative_expression.
     def visitMultiplicative_expression(self, ctx: LoraParser.Multiplicative_expressionContext):
+        self.evaluate_in_new_expression([ctx.primary_expression()])
         if ctx.op:
             if ctx.MULT():
                 self.lora.add_operator(Operator.MUL)
             if ctx.DIV():
                 self.lora.add_operator(Operator.DIV)
-        return self.visitChildren(ctx)
+            self.visit(ctx.multiplicative_expression())
 
     # Visit a parse tree produced by LoraParser#primary_expression.
     def visitPrimary_expression(self, ctx: LoraParser.Primary_expressionContext):
         if ctx.index_operator():
+            original = self.lora.swap_expression_stack([])
+            self.lora.start_expression()
             self.visit(ctx.index_operator())
             self.visit(ctx.primary_expression())
+            self.lora.evaluate_expression()
+            result = self.lora.expression_result()
+            self.lora.swap_expression_stack(original)
+            self.lora.add_value(result)
         elif ctx.attribute_operator():
+            original = self.lora.swap_expression_stack([])
+            self.lora.start_expression()
             self.lora.add_operator(Operator.ATTR)
             self.visit(ctx.primary_expression())
             self.visit(ctx.attribute_operator())
+            self.lora.evaluate_expression()
+            result = self.lora.expression_result()
+            self.lora.swap_expression_stack(original)
+            self.lora.add_value(result)
         elif ctx.DOT() and ctx.function_call():
             original = self.lora.swap_expression_stack([])
             self.lora.start_expression()

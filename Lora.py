@@ -8,7 +8,7 @@ import math
 import copy
 import matplotlib.pyplot as plt
 import LoraVisitor
-
+from ActionStack import *
 
 class Lora:
     def __init__(self, visitor: LoraVisitor = None):
@@ -140,14 +140,27 @@ class Lora:
                 raise Exception('Variable not found: ' + name)
             self.expression_stack.append(var)
 
-    def next_operator(self):
-        for i, e in reversed(list(enumerate(self.expression_stack))):
+    def next_operator(self, backwards=True):
+        if backwards:
+            iterator = reversed(list(enumerate(self.expression_stack)))
+        else:
+            iterator = enumerate(self.expression_stack)
+        for i, e in iterator:
             if isinstance(e, Operator):
                 return i, e
         return None
 
-    def evaluate_next_operator(self):
-        pair = self.next_operator()
+    def perform_expression(self, action: ActionStack, primary_expression=True):
+        original = self.swap_expression_stack([])
+        self.start_expression()
+        action.execute()
+        self.evaluate_expression(primary_expression)
+        result = self.expression_result()
+        self.swap_expression_stack(original)
+        return result
+
+    def evaluate_next_operator(self, primary_expression):
+        pair = self.next_operator(backwards=primary_expression)
 
         if pair is None:
             return False
@@ -156,44 +169,11 @@ class Lora:
 
         operands_count = operator_operands_count(op)
 
-        if operands_count == 1:
-            operand = self.expression_stack[index + 1]
-            if op == Operator.NOT:
-                result = Boolean(not operand)
-
-        elif operands_count == 2:
+        if primary_expression:
             left_operand = self.expression_stack[index + 1]
             right_operand = self.expression_stack[index + 2]
 
-            if op in (Operator.AND, Operator.OR, Operator.NOT):
-                if left_operand.type != ObjectType.BOOLEAN or right_operand.type != ObjectType.BOOLEAN:
-                    raise Exception("Expected logical expressions in boolean expression")
-
-            if op == Operator.ADD:
-                result = left_operand + right_operand
-            elif op == Operator.SUB:
-                result = left_operand - right_operand
-            elif op == Operator.MUL:
-                result = left_operand * right_operand
-            elif op == Operator.DIV:
-                result = left_operand / right_operand
-            elif op == Operator.EQ:
-                result = Boolean(left_operand == right_operand)
-            elif op == Operator.NEQ:
-                result = Boolean(left_operand != right_operand)
-            elif op == Operator.LT:
-                result = Boolean(left_operand < right_operand)
-            elif op == Operator.LTE:
-                result = Boolean(left_operand <= right_operand)
-            elif op == Operator.GT:
-                result = Boolean(left_operand > right_operand)
-            elif op == Operator.GTE:
-                result = Boolean(left_operand >= right_operand)
-            elif op == Operator.AND:
-                result = Boolean(left_operand and right_operand)
-            elif op == Operator.OR:
-                result = Boolean(left_operand or right_operand)
-            elif op == Operator.ATTR:
+            if op == Operator.ATTR:
                 variable = left_operand.context.find_variable(right_operand)
                 if variable is None:
                     raise Exception(f"Property {right_operand} not found")
@@ -204,13 +184,56 @@ class Lora:
                 if right_operand.type != ObjectType.ARRAY:
                     raise Exception("Index operator expects array object")
                 result = right_operand[left_operand.value]
+
+            for i in range(1 + operands_count):
+                self.expression_stack.pop(index)
+
+            self.expression_stack.insert(index, result)
         else:
-            raise Exception("Invalid operands count")
+            if operands_count == 1:
+                operand = self.expression_stack[index + 1]
+                if op == Operator.NOT:
+                    result = Boolean(not operand)
+                else:
+                    raise Exception('Invalid expression stack state - wrong operator')
+            elif operands_count == 2:
+                left_operand = self.expression_stack[index - 1]
+                right_operand = self.expression_stack[index + 1]
 
-        for i in range(1 + operands_count):
-            self.expression_stack.pop(index)
+                if op in (Operator.AND, Operator.OR, Operator.NOT):
+                    if left_operand.type != ObjectType.BOOLEAN or right_operand.type != ObjectType.BOOLEAN:
+                        raise Exception("Expected logical expressions in boolean expression")
 
-        self.expression_stack.insert(index, result)
+                if op == Operator.ADD:
+                    result = left_operand + right_operand
+                elif op == Operator.SUB:
+                    result = left_operand - right_operand
+                elif op == Operator.MUL:
+                    result = left_operand * right_operand
+                elif op == Operator.DIV:
+                    result = left_operand / right_operand
+                elif op == Operator.EQ:
+                    result = Boolean(left_operand == right_operand)
+                elif op == Operator.NEQ:
+                    result = Boolean(left_operand != right_operand)
+                elif op == Operator.LT:
+                    result = Boolean(left_operand < right_operand)
+                elif op == Operator.LTE:
+                    result = Boolean(left_operand <= right_operand)
+                elif op == Operator.GT:
+                    result = Boolean(left_operand > right_operand)
+                elif op == Operator.GTE:
+                    result = Boolean(left_operand >= right_operand)
+                elif op == Operator.AND:
+                    result = Boolean(left_operand and right_operand)
+                elif op == Operator.OR:
+                    result = Boolean(left_operand or right_operand)
+                else:
+                    raise Exception('Invalid expression stack state - wrong operator')
+
+            self.expression_stack = self.expression_stack[operands_count + 1:]
+
+            self.expression_stack.insert(0, result)
 
         return True
 
@@ -243,10 +266,10 @@ class Lora:
         tuple = Tuple(self.expression_stack)
         self.expression_stack = [tuple]
 
-    def evaluate_expression(self):
+    def evaluate_expression(self, primary_expression=True):
         self.dereference_variables()
 
-        while self.evaluate_next_operator():
+        while self.evaluate_next_operator(primary_expression):
             pass
 
     def update_ans(self):
