@@ -20,8 +20,13 @@ class Context:
     def variable_exists(self, name):
         return name in self.variables
 
+    def empty(self):
+        return len(self.variables) == 0
+
     def create_copy(self):
         return copy.deepcopy(self)
 
     def __str__(self):
-        print(self.variables)
+        if self.empty():
+            return '{ }'
+        return '{\n   ' + '\n   '.join(f'{key}: {val.object}' for key, val in self.variables.items()) + '\n}'

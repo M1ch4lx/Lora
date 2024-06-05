@@ -188,7 +188,7 @@ class LoraVisitorImpl(LoraVisitor):
             self.visit(function.parser_context)
 
         if self.lora.is_expression_stack_empty():
-            return_value = Object()
+            return_value = None
         else:
             return_value = self.lora.expression_result()
 

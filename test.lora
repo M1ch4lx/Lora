@@ -1,12 +1,9 @@
+import Vector as vec;
 
 function hello(name)
 {
     print("Hello " + name + "!");
 }
-
-return;
-
-import Vector as vec;
 
 function linspace(begin, end, count)
 {

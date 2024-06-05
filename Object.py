@@ -17,6 +17,12 @@ class Object:
     def multiplicative_neutral_element(self):
         pass
 
+    def __str__(self):
+        return str(self.context)
+
+    def context_str_if_any(self):
+        return '\n' + str(self.context) if not self.context.empty() else ''
+
 
 class String(Object):
     def __init__(self, string):
@@ -26,7 +32,7 @@ class String(Object):
         self.prototype_name = 'String'
 
     def __str__(self):
-        return self.value
+        return self.value + self.context_str_if_any()
 
     def __add__(self, other):
         return String(self.value + other.value)
@@ -45,7 +51,7 @@ class Array(Object):
         self.prototype_name = 'Array'
 
     def __str__(self):
-        return str(self.value)
+        return f"[{', '.join(str(elem) for elem in self.value)}]" + self.context_str_if_any()
 
     def __getitem__(self, item):
         return self.value[item]
@@ -87,7 +93,7 @@ class Tuple(Object):
         self.prototype_name = 'Tuple'
 
     def __str__(self):
-        return f'({", ".join(str(obj) for obj in self.value)})'
+        return f'({", ".join(str(obj) for obj in self.value)})' + self.context_str_if_any()
 
 
 class Boolean(Object):
@@ -98,7 +104,7 @@ class Boolean(Object):
         self.prototype_name = 'Boolean'
 
     def __str__(self):
-        return str(self.value)
+        return str(self.value) + self.context_str_if_any()
 
     def __bool__(self):
         return self.value
@@ -123,7 +129,7 @@ class Number(Object):
         return Number(1)
 
     def __str__(self):
-        return str(self.value)
+        return str(self.value) + self.context_str_if_any()
 
     def __add__(self, other):
         return Number(self.value + other.value)
