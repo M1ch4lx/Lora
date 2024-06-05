@@ -18,6 +18,7 @@ class Lora:
         self.breaking_loop = False
         self.call_level = 0
         self.visitor: LoraVisitor = visitor
+        self.assign_variable('ans', Number(0))
 
         def plot(args):
             x = args[0]
@@ -245,4 +246,12 @@ class Lora:
         self.dereference_variables()
 
         while self.evaluate_next_operator():
+            pass
+
+    def update_ans(self):
+        try:
+            result = self.expression_result()
+            if result is not None:
+                self.assign_variable('ans', result)
+        except Exception as e:
             pass

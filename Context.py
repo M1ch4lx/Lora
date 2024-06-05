@@ -12,9 +12,12 @@ class Context:
     def find_variable(self, name) -> Variable:
         return self.variables.get(name)
 
+    def is_variable_name_illegal(self, name):
+        return name in Context.BUILTIN_PROTOTYPES
+
     def create_variable(self, variable):
-        if variable.name in Context.BUILTIN_PROTOTYPES:
-            raise Exception('Variable name is reserved')
+        if self.is_variable_name_illegal(variable.name):
+            raise Exception(f'Variable name {variable.name} is illegal')
         self.variables[variable.name] = variable
 
     def variable_exists(self, name):

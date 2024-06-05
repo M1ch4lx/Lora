@@ -146,11 +146,11 @@ class LoraVisitorImpl(LoraVisitor):
         function: Function = self.lora.function_set.find_function(function_id)
         if function is None:
             callback_var = self.lora.current_context.find_variable(function_name)
-            if callback_var.object.type == ObjectType.CALLBACK:
+            if callback_var is not None and callback_var.object.type == ObjectType.CALLBACK:
                 function = callback_var.object.value
 
         if function is None:
-            raise Exception("Cannot resolve function call: " + function_name)
+            raise Exception(f"Cannot resolve function call: {ctx.getText()}")
 
         if this_object is not None:
             evaluated_args.value.insert(0, this_object)
@@ -555,9 +555,12 @@ class LoraVisitorImpl(LoraVisitor):
             self.lora.start_expression()
             children = self.visitChildren(ctx)
             self.lora.evaluate_expression()
+            self.lora.update_ans()
             return children
 
-        return self.visitChildren(ctx)
+        children = self.visitChildren(ctx)
+        self.lora.update_ans()
+        return children
 
     # Visit a parse tree produced by LoraParser#statement.
     def visitStatement(self, ctx: LoraParser.StatementContext):
