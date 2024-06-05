@@ -189,7 +189,7 @@ class LoraVisitorImpl(LoraVisitor):
                 python_value_args.append(
                     self.lora.marshal.lora_to_python(arg))
 
-            result = function.python_callback(python_value_args)
+            result = function.python_callback(*tuple(python_value_args))
 
             self.lora.start_expression()
             if result is not None:

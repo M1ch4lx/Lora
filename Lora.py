@@ -21,9 +21,7 @@ class Lora:
         self.visitor: LoraVisitor = visitor
         self.assign_variable('ans', Number(0))
 
-        def plot(args):
-            x = args[0]
-            y = args[1]
+        def plot(x, y):
             plt.plot(x, y)
             plt.xlabel('X Axis')
             plt.ylabel('Y Axis')
@@ -33,19 +31,19 @@ class Lora:
             'plot', [ObjectType.ARRAY, ObjectType.ARRAY], plot)
 
         self.add_python_function(
-            'print', [ObjectType.ANY], lambda args: print(args[0]))
+            'print', [ObjectType.ANY], lambda arg: print(arg))
 
         self.add_python_function(
-            'enumerate', [ObjectType.ARRAY], lambda args: list(enumerate(args[0])))
+            'enumerate', [ObjectType.ARRAY], lambda iterable: list(enumerate(iterable)))
 
         self.add_python_function(
-            'range', [ObjectType.NUMBER, ObjectType.NUMBER], lambda args: list(range(args[0], args[1])))
+            'range', [ObjectType.NUMBER, ObjectType.NUMBER], lambda start, stop: list(range(start, stop)))
 
         self.add_python_function(
-            'sin', [ObjectType.NUMBER], lambda args: math.sin(args[0]))
+            'sin', [ObjectType.NUMBER], lambda angle: math.sin(angle))
 
         self.add_python_function(
-            'size', [ObjectType.ARRAY], lambda args: len(args[0]), prototype='Array')
+            'size', [ObjectType.ARRAY], lambda array: len(array), prototype='Array')
 
     def add_python_function(self, name, args, callback, prototype=None):
         args = [FunctionArgument(i, str(i), prototype=object_type_prototype(type), type=type) for i, type in enumerate(args)]
