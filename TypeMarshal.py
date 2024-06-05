@@ -20,6 +20,8 @@ class Marshal:
     def python_to_lora(self, value):
         if value is None:
             return None
+        if isinstance(value, str):
+            return String(value)
         if isinstance(value, float):
             return Number(float(value))
         if isinstance(value, int):

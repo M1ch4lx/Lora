@@ -22,6 +22,7 @@ class LoraVisitorImpl(LoraVisitor):
 
     def __init__(self, lora: Lora):
         self.lora = lora
+        self.lora.visitor = self
         self.this: Object = None
         self.current_statement_line = ''
 

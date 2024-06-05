@@ -1,5 +1,35 @@
+from enum import Enum
+
+
+class ObjectType(Enum):
+    USER = 0
+    NUMBER = 1
+    BOOLEAN = 3
+    STRING = 4
+    ARRAY = 5
+    TUPLE = 6
+    CALLBACK = 7
+    ANY = 8
+
+
+def object_type_prototype(type):
+    if type == ObjectType.NUMBER:
+        return 'Number'
+    if type == ObjectType.BOOLEAN:
+        return 'Boolean'
+    if type == ObjectType.STRING:
+        return 'String'
+    if type == ObjectType.ARRAY:
+        return 'Array'
+    if type == ObjectType.TUPLE:
+        return 'Tuple'
+    if type == ObjectType.CALLBACK:
+        return 'Callback'
+    return 'Any'
+
+
 class FunctionArgument:
-    def __init__(self, index, name, prototype='Any', type=None):
+    def __init__(self, index, name, prototype='Any', type=ObjectType.ANY):
         self.name = name
         self.prototype = prototype
         self.index = index
@@ -14,7 +44,7 @@ class FunctionSignature:
     def __init__(self, name, args: list[FunctionArgument]):
         self.name = name
         self.args_count = len(args)
-        self.args = args
+        self.args: list[FunctionArgument] = args
         self.id = get_function_id(self.name)
         self.return_type = 'Any'
 

@@ -29,5 +29,6 @@ try:
     result = visitor.visit(tree)
 except StopExecution as e:
     print(lora.expression_result())
+    lora.call_function('hello', ['michal'])
 except Exception as e:
     print(f'In line {visitor.current_statement_line}: {e}')

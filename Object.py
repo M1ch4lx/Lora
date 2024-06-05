@@ -1,34 +1,7 @@
 import copy
 from enum import Enum
-from Function import Function
+from Function import *
 from Context import Context
-
-
-class ObjectType(Enum):
-    USER = 0
-    NUMBER = 1
-    BOOLEAN = 3
-    STRING = 4
-    ARRAY = 5
-    TUPLE = 6
-    CALLBACK = 7
-    ANY = 8
-
-
-def object_type_prototype(type):
-    if type == ObjectType.NUMBER:
-        return 'Number'
-    if type == ObjectType.BOOLEAN:
-        return 'Boolean'
-    if type == ObjectType.STRING:
-        return 'String'
-    if type == ObjectType.ARRAY:
-        return 'Array'
-    if type == ObjectType.TUPLE:
-        return 'Tuple'
-    if type == ObjectType.CALLBACK:
-        return 'Callback'
-    return 'Any'
 
 
 class Object:

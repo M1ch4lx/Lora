@@ -3,20 +3,21 @@ from Function import *
 from Operator import *
 from Variable import *
 from Object import *
-from TypeMarshalling import *
+from TypeMarshal import *
 import math
 import copy
 import matplotlib.pyplot as plt
-
+import LoraVisitor
 
 class Lora:
-    def __init__(self):
+    def __init__(self, visitor: LoraVisitor = None):
         self.function_set: FunctionSet = FunctionSet()
         self.current_context: Context = Context()
         self.expression_stack: list = []
         self.marshal: Marshal = Marshal()
         self.breaking_loop = False
         self.call_level = 0
+        self.visitor: LoraVisitor = visitor
 
         def plot(args):
             x = args[0]
@@ -53,6 +54,33 @@ class Lora:
         if self.function_set.function_exists(name):
             raise Exception(f"Function already exists: {name}")
         self.function_set.add_function(function)
+
+    def call_function(self, name, args: list[Object], perform_marshalling=True):
+        if perform_marshalling:
+            args = self.marshal.python_to_lora(args)
+        function = self.function_set.find_function(name)
+        if function is None:
+            raise Exception(f"Function {name} not found")
+        if function.built_in:
+            raise Exception(f"Function {name} is a built-in function, calling it using this method is not allowed")
+
+        original_context = self.swap_context(Context())
+        original_expression_stack = self.swap_expression_stack([])
+
+        for index, expected_arg in enumerate(function.signature.args):
+            if expected_arg.type != ObjectType.ANY and expected_arg.type != args[index].type:
+                raise Exception(f"Function {name} expects argument of type {expected_arg.type} at position {index}")
+            self.assign_variable(expected_arg.name, args[index])
+
+        self.visitor.visit(function.parser_context)
+
+        return_value = None if self.is_expression_stack_empty()\
+            else self.expression_result()
+
+        self.swap_expression_stack(original_expression_stack)
+        self.swap_context(original_context)
+
+        return return_value
 
     def swap_context(self, new_context):
         current_context = self.current_context
