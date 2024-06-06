@@ -5,6 +5,7 @@ from LoraParser import LoraParser
 from LoraVisitorImpl import LoraVisitorImpl, StopExecution
 import sys
 from enum import Enum
+from StandardLibrary import StandardLibrary
 
 
 class LoraCommand(Enum):
@@ -14,6 +15,7 @@ class LoraCommand(Enum):
 
 
 lora = Lora()
+lora.import_library(StandardLibrary())
 visitor = LoraVisitorImpl(lora)
 
 

@@ -2,11 +2,11 @@ from Context import Context
 from Function import *
 from Operator import *
 from Variable import *
-from Object import *
 from TypeMarshal import *
 import math
-import copy
 import matplotlib.pyplot as plt
+from Object import *
+import copy
 import LoraVisitor
 from ActionStack import *
 
@@ -22,29 +22,8 @@ class Lora:
         self.visitor: LoraVisitor = visitor
         self.assign_variable('ans', Number(0))
 
-        def plot(x, y):
-            plt.plot(x, y)
-            plt.xlabel('X Axis')
-            plt.ylabel('Y Axis')
-            plt.show()
-
-        self.add_python_function(
-            'plot', [ObjectType.ARRAY, ObjectType.ARRAY], plot)
-
-        self.add_python_function(
-            'print', [ObjectType.ANY], lambda arg: print(arg))
-
-        self.add_python_function(
-            'enumerate', [ObjectType.ARRAY], lambda iterable: list(enumerate(iterable)))
-
-        self.add_python_function(
-            'range', [ObjectType.NUMBER, ObjectType.NUMBER], lambda start, stop: list(range(start, stop)))
-
-        self.add_python_function(
-            'sin', [ObjectType.NUMBER], lambda angle: math.sin(angle))
-
-        self.add_python_function(
-            'size', [ObjectType.ARRAY], lambda array: len(array), prototype='Array')
+    def import_library(self, library):
+        library.load(self)
 
     def add_python_function(self, name, args, callback, prototype=None):
         args = [FunctionArgument(i, str(i), prototype=object_type_prototype(type), type=type) for i, type in enumerate(args)]

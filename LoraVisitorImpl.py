@@ -13,6 +13,7 @@ from Function import *
 from Context import *
 from Variable import *
 from ActionStack import *
+from StandardLibrary import StandardLibrary
 
 
 class StopExecution(Exception):
@@ -70,6 +71,7 @@ class LoraVisitorImpl(LoraVisitor):
         tree = parser.program()
 
         module = Lora()
+        module.import_library(StandardLibrary())
 
         visitor = LoraVisitorImpl(module)
 

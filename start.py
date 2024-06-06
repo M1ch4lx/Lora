@@ -6,6 +6,7 @@ from antlr4 import *
 from LoraLexer import LoraLexer
 from LoraParser import LoraParser
 from LoraVisitorImpl import LoraVisitorImpl, StopExecution
+from StandardLibrary import *
 
 class PlotFunctions(Scene):
     def __init__(self, functions, highlight_intersections=False, highlight_zeros=False, highlight_extremes=False, draw_derivatives=False, **kwargs):
@@ -150,6 +151,7 @@ class PlotFunctionsScene(PlotFunctions):
         # print(tree.toStringTree(recog=parser))
 
         lora = Lora()
+        lora.import_library(StandardLibrary())
 
         visitor = LoraVisitorImpl(lora)
 
