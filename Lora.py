@@ -9,6 +9,8 @@ from Object import *
 import copy
 import LoraVisitor
 from ActionStack import *
+from Export import *
+import StandardLibrary
 
 
 class Lora:
@@ -22,8 +24,16 @@ class Lora:
         self.visitor: LoraVisitor = visitor
         self.assign_variable('ans', Number(0))
 
-    def import_library(self, library):
+        self.import_library(StandardLibrary)
+
+    def import_library_old(self, library):
         library.load(self)
+
+    def import_library(self, python_module):
+        functions = get_functions_to_export_from_module(python_module)
+        for name, func, prototype in functions:
+            args = lora_function_args_signature_from_python(func)
+            self.add_python_function(name, args, func, prototype)
 
     def add_python_function(self, name, args, callback, prototype=None):
         args = [FunctionArgument(i, str(i), prototype=object_type_prototype(type), type=type) for i, type in enumerate(args)]
