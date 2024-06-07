@@ -10,7 +10,10 @@ import copy
 import LoraVisitor
 from ActionStack import *
 from Export import *
+
 import StandardLibrary
+import MathLibrary
+import PlotLibrary
 
 
 class Lora:
@@ -25,9 +28,8 @@ class Lora:
         self.assign_variable('ans', Number(0))
 
         self.import_library(StandardLibrary)
-
-    def import_library_old(self, library):
-        library.load(self)
+        self.import_library(MathLibrary)
+        self.import_library(PlotLibrary)
 
     def import_library(self, python_module):
         functions = get_functions_to_export_from_module(python_module)

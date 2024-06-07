@@ -18,11 +18,6 @@ def lora_range(start: int, stop: int):
     return list(range(start, stop))
 
 
-@export
-def sin(angle: float):
-    return math.sin(angle)
-
-
 @export('Array')
 class ArrayPrototype:
     @export
