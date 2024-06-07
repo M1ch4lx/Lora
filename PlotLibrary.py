@@ -12,7 +12,7 @@ def plot(x: list, y: list):
 
 
 @export
-def array(values: list):
+def numpy_array(values: list):
     return np.array(values)
 
 @export
