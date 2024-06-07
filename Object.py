@@ -24,6 +24,41 @@ class Object:
         return '\n' + str(self.context) if not self.context.empty() else ''
 
 
+class NativeObject(Object):
+    def __init__(self, handle):
+        super().__init__()
+        self.type = ObjectType.NATIVE
+        self.value = handle
+        self.prototype_name = type(handle).__name__
+
+    def __deepcopy__(self, memo):
+        if id(self) in memo:
+            return memo[id(self)]
+
+        new_instance = self.__class__.__new__(self.__class__)
+        memo[id(self)] = new_instance
+
+        new_instance.value = self.value
+        new_instance.type = self.type
+        new_instance.context = copy.deepcopy(self.context)
+        new_instance.prototype_name = self.prototype_name
+
+        return new_instance
+
+    def __str__(self):
+        return 'Native object: ' + type(self.value).__name__ + self.context_str_if_any()
+
+    def __add__(self, other):
+        return NativeObject(self.value + other.value)
+
+    def __sub__(self, other):
+        return NativeObject(self.value - other.value)
+
+    def __mul__(self, other):
+        return NativeObject(self.value * other.value)
+
+
+
 class String(Object):
     def __init__(self, string):
         super().__init__()

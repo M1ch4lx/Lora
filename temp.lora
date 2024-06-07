@@ -1,5 +1,58 @@
 import Vector as vec;
 
+function hello(name)
+{
+    print("Hello " + name + "!");
+}
+
+function linspace(begin, end, count)
+{
+    length = end - begin;
+    step = length / (count + 1);
+    array = [];
+    current = begin + step;
+    for(i in range(0, count))
+    {
+        array = array + [current];
+        current = current + step;
+    }
+    return array;
+}
+
+function calculate_values(args, func)
+{
+    values = args;
+    for(pair in enumerate(args))
+    {
+        i, arg = pair;
+        values[i] = func(arg);
+    }
+    return values;
+}
+
+function identity(x)
+{
+    return x;
+}
+
+function linear(x)
+{
+    return 2*x + 5;
+}
+
+function quadratic(x)
+{
+    return 2*x*x + 5;
+}
+
+x = linspace(0, 100, 100);
+
+#y = calculate_values(x, identity);
+#y = calculate_values(x, linear);
+y = calculate_values(x, quadratic);
+
+plot(x, y);
+
 function bubbleSort(array: Array) {
     n = array.size();
     for (i in range(0, n-1)) {
@@ -35,4 +88,3 @@ print(result_recursive);
 
 v = vec.new(0,0);
 v.print();
-

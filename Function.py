@@ -10,6 +10,7 @@ class ObjectType(Enum):
     TUPLE = 6
     CALLBACK = 7
     ANY = 8
+    NATIVE = 9
 
 
 def object_type_prototype(type):

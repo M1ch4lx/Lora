@@ -15,6 +15,8 @@ class Marshal:
             return [self.lora_to_python(el) for el in o.value]
         if o.type == ObjectType.CALLBACK:
             return o.value
+        if o.type == ObjectType.NATIVE:
+            return o.value
         raise Exception(f'Cannot convert provided type to python object: {o.type.name}')
 
     def python_to_lora(self, value):
@@ -32,4 +34,5 @@ class Marshal:
             return Boolean(value)
         if isinstance(value, list):
             return Array([self.python_to_lora(el) for el in value])
-        raise Exception(f'Cannot convert provided type to lora object: {type(value)}')
+        # raise Exception(f'Cannot convert provided type to lora object: {type(value)}')
+        return NativeObject(value)
