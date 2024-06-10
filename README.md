@@ -16,7 +16,9 @@
 - Typy danych: Number, Tuple, Array, Callback, String, Boolean, Object
 
 ## Środowisko interaktywne
-Lora umożliwia uruchomienie środowiska interaktywnego
+Lora umożliwia uruchomienie środowiska interaktywnego, komendy w środowisku:
+- !exit - wyjście ze środowiska
+- !load <nazwa_pliku> - wykonanie pliku
 
 ## Struktura interpretera - najważniejsze komponent
 - Lora - główna klasa przechowująca stan programu, zajmuje się ewaluacją wyrażeń, zarządzaniem zmiennymi oraz zbiorem funkcji
@@ -24,8 +26,8 @@ Lora umożliwia uruchomienie środowiska interaktywnego
 - LoraVisitorImpl - implementacja visitora - aktualnie duża część logiki wykonywania kodu znajduje się też w visitorze
 
 ## Eksportowanie funkcji języka Python do Lora
-Lora umożliwia bardzo łatwe dodawanie funkcji do środowiska - wszystko odbywa się poprzez dodawanie dekoratorów
-```
+Lora umożliwia bardzo łatwe dodawanie funkcji z języka Python do środowiska - wszystko odbywa się poprzez dodawanie dekoratorów
+``` python3
 @export('range')
 def lora_range(start: int, stop: int):
     return list(range(start, stop))
@@ -38,8 +40,18 @@ class ArrayPrototype:
         return len(array)
 ```
 
-## Prototypowanie
-Lora umożliwia specyficzny sposób pisania pseudo klas, inspirowany językiem Lua, poniżej przykładowa implementacja wektora
+## Marshalling typów
+Jak widać w przykładzie powyżej operujemy jedynie typami z języka Python, jest to możliwe dzięki komponentowi który kownertuje obieky z jednego języka na drugi.
+
+## Opis języka
+
+### Zmienne
+Tworzenie zmiennych wygląda tak jak w Python, możemy tworzyć w podobny sposób krotki, tablice i dynamiczne obiekty.
+Ważne jest aby pamiętać że w Lora nie ma referencji i wszystko jest kopią.
+
+### Prototypowanie
+Lora umożliwia specyficzny sposób pisania pseudo klas, inspirowany językiem Lua, poniżej przykładowa implementacja wektora.
+Należy jednak pamiętać że nie jest to klasa, Vector jest zwyczajnym obiektem z którym możemy potem zrobić co chcemy, należy to potraktować bardziej jako wzorzec projektowy.
 ```
 Vector = { };
 
@@ -74,6 +86,8 @@ function Vector:print(self)
 return Vector;
 ```
 
+Aby lepiej zrozumieć jak programować w Lora proszę o przejście do sekcji z przykładami.
+
 ## Aktualne możeliwości i plany na przyszłość
 Na ten moment możliwości jeśli chodzi o wizualizacje są dość okrojone - można robić proste animacje wektorowe oraz rysować proste wkresy.
 Mimo to jednak język jest już na tyle rozwinięty że dodawanie nowych funkcjonalności jest bardzo ułatwione, w przyszłości warto by rozszerzyć funkcje wizualizacji oraz dodać więcej ogólnych funkcji.
@@ -87,7 +101,10 @@ Mimo to jednak język jest już na tyle rozwinięty że dodawanie nowych funkcjo
 ```antlr4 Lora.g4 -Dlanguage=Python3 -visitor```
 
 ### Uruchamianie
+Wykonanie pliku:
 ```python -m LoraRun <nazwa_pliku>```
+Środowisko interaktywne:
+```python -m LoraRun```
 
 ## Tokeny
 ```
