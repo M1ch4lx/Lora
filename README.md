@@ -15,6 +15,9 @@
 - Lora ma zaimplementowany konwerter między typami Pythonowymi a tymi z Lora
 - Typy danych: Number, Tuple, Array, Callback, String, Boolean, Object
 
+## Środowisko interaktywne
+Lora umożliwia uruchomienie środowiska interaktywnego
+
 ## Struktura interpretera - najważniejsze komponent
 - Lora - główna klasa przechowująca stan programu, zajmuje się ewaluacją wyrażeń, zarządzaniem zmiennymi oraz zbiorem funkcji
 - Context - zawiera zmienne i inne parametry dotyczące aktualnego zasięgu
