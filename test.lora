@@ -1,14 +1,4 @@
-
-function linear(x)
-{
-    return 2*x + 5;
-}
-
-plot_function(linear, [0, 1]);
-
-return;
-
-#import Vector as vec;
+import Vector as vec;
 
 function hello(name)
 {
