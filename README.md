@@ -41,7 +41,7 @@ class ArrayPrototype:
 ```
 
 ## Marshalling typów
-Jak widać w przykładzie powyżej operujemy jedynie typami z języka Python, jest to możliwe dzięki komponentowi który kownertuje obieky z jednego języka na drugi.
+Jak widać w przykładzie powyżej operujemy jedynie typami z języka Python, jest to możliwe dzięki komponentowi który kownertuje obiekty z jednego języka na drugi.
 
 ## Opis języka
 
