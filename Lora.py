@@ -29,6 +29,7 @@ class Lora:
 
         self.import_library(StandardLibrary)
         self.import_library(MathLibrary)
+        PlotLibrary.lora = self
         self.import_library(PlotLibrary)
 
     def import_library(self, python_module):
@@ -47,14 +48,20 @@ class Lora:
             raise Exception(f"Function already exists: {name}")
         self.function_set.add_function(function)
 
-    def call_function(self, name, args: list[Object], perform_marshalling=True):
-        if perform_marshalling:
-            args = self.marshal.python_to_lora(args)
+    def call_function_by_name(self, name, args: list[Object], perform_marshalling=True):
         function = self.function_set.find_function(name)
         if function is None:
             raise Exception(f"Function {name} not found")
         if function.built_in:
             raise Exception(f"Function {name} is a built-in function, calling it using this method is not allowed")
+
+        return self.call_function(function, args, perform_marshalling)
+
+    def call_function(self, function: Function, args: list[Object], perform_marshalling=True):
+        if perform_marshalling:
+            args = self.marshal.python_to_lora(args)
+
+        name = function.signature.name
 
         original_context = self.swap_context(Context())
         original_expression_stack = self.swap_expression_stack([])
@@ -72,7 +79,7 @@ class Lora:
         self.swap_expression_stack(original_expression_stack)
         self.swap_context(original_context)
 
-        return return_value
+        return self.marshal.lora_to_python(return_value)
 
     def swap_context(self, new_context):
         current_context = self.current_context

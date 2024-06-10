@@ -1,4 +1,14 @@
-import Vector as vec;
+
+function linear(x)
+{
+    return 2*x + 5;
+}
+
+plot_function(linear, [0, 1]);
+
+return;
+
+#import Vector as vec;
 
 function hello(name)
 {
@@ -33,11 +43,6 @@ function calculate_values(args, func)
 function identity(x)
 {
     return x;
-}
-
-function linear(x)
-{
-    return 2*x + 5;
 }
 
 function quadratic(x)
