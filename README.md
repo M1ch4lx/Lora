@@ -1,4 +1,80 @@
-# Lora
+# Interpreter Lora
+
+## Opis projektu
+- Jest to interpreter języka Lora przeznaczonego do wizualizacji matematycznych
+- Interpreter implementowany jest w języku Python
+- Parsery generowane są przy pomocy Antlr 4
+- Lora docelowa ma być używana przez matematyków oraz inżynierów danych, z założenia ma to być język prosty i łatwy do nauczenia
+
+## Założenia języka
+- W Lora każde przypisanie jest kopią
+- Lora umożliwia dynamiczne tworzenie obiektów
+- W Lora nie ma referencji
+- Możliwe jest dodawanie metod do obiektów
+- Lore można łatwo rozwijać poprzez pisanie nowych funkcji w Pythonie
+- Lora ma zaimplementowany konwerter między typami Pythonowymi a tymi z Lora
+- Typy danych: Number, Tuple, Array, Callback, String, Boolean, Object
+
+## Struktura interpretera - najważniejsze komponent
+- Lora - główna klasa przechowująca stan programu, zajmuje się ewaluacją wyrażeń, zarządzaniem zmiennymi oraz zbiorem funkcji
+- Context - zawiera zmienne i inne parametry dotyczące aktualnego zasięgu
+- LoraVisitorImpl - implementacja visitora - aktualnie duża część logiki wykonywania kodu znajduje się też w visitorze
+
+## Eksportowanie funkcji języka Python do Lora
+Lora umożliwia bardzo łatwe dodawanie funkcji do środowiska - wszystko odbywa się poprzez dodawanie dekoratorów
+```
+@export('range')
+def lora_range(start: int, stop: int):
+    return list(range(start, stop))
+
+
+@export('Array')
+class ArrayPrototype:
+    @export
+    def size(array: list):
+        return len(array)
+```
+
+## Prototypowanie
+Lora umożliwia specyficzny sposób pisania pseudo klas, inspirowany językiem Lua, poniżej przykładowa implementacja wektora
+```
+Vector = { };
+
+function Vector:zero(self)
+{
+    vec = self;
+    vec.x = 0;
+    vec.y = 0;
+    return vec;
+}
+
+function Vector:new(self, x, y)
+{
+    vec = self;
+    vec.x = x;
+    vec.y = y;
+    return vec;
+}
+
+function Vector:add(self, vec)
+{
+    self.x = self.x + vec.x;
+    self.y = self.y + vec.y;
+}
+
+function Vector:print(self)
+{
+    print(self.x);
+    print(self.y);
+}
+
+return Vector;
+```
+
+## Aktualne możeliwości i plany na przyszłość
+Na ten moment możliwości jeśli chodzi o wizualizacje są dość okrojone - można robić proste animacje wektorowe oraz rysować proste wkresy.
+Mimo to jednak język jest już na tyle rozwinięty że dodawanie nowych funkcjonalności jest bardzo ułatwione, w przyszłości warto by rozszerzyć funkcje wizualizacji oraz dodać więcej ogólnych funkcji.
+
 ## Uruchamianie
 
 ### Wymagania
@@ -186,16 +262,6 @@ simple_statement :
 
 statement : if_statement | simple_statement SEMI | for_loop_statement | while_loop_statement ;
 ```
-
-## Kluczowe informacje
-- W Lora każde przypisanie jest kopią
-- Lora umożliwia dynamiczne tworzenie obiektów
-- W Lora nie ma referencji
-- Możliwe jest dodawanie metod do obiektów
-- Lore można łatwo rozwijać poprzez pisanie nowych funkcji w Pythonie
-- Lora ma zaimplementowany konwerter między typami Pythonowymi a tymi z Lora
-- Typy danych: Number, Tuple, Array, Callback, String, Boolean, Object
-- Jeśli chodzi o wizualizacje na ten moment można jedynie rysować wykres funkcji
 
 ## Przykładowy kod
 ### Vector.lo
