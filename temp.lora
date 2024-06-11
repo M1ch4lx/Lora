@@ -1,90 +1,17 @@
-import Vector as vec;
+import Sandbox.py;
 
-function hello(name)
+function times_2(x)
 {
-    print("Hello " + name + "!");
+    return x * 2;
 }
 
-function linspace(begin, end, count)
-{
-    length = end - begin;
-    step = length / (count + 1);
-    array = [];
-    current = begin + step;
-    for(i in range(0, count))
-    {
-        array = array + [current];
-        current = current + step;
-    }
-    return array;
-}
+print(calc(1, 2));
 
-function calculate_values(args, func)
-{
-    values = args;
-    for(pair in enumerate(args))
-    {
-        i, arg = pair;
-        values[i] = func(arg);
-    }
-    return values;
-}
+return;
 
-function identity(x)
-{
-    return x;
-}
+a = matrix([[1, 0], [0, 1]]);
+b = matrix([[1, 1, 3], [0, 1, 0]]);
 
-function linear(x)
-{
-    return 2*x + 5;
-}
+c = a.dot(b);
 
-function quadratic(x)
-{
-    return 2*x*x + 5;
-}
-
-x = linspace(0, 100, 100);
-
-#y = calculate_values(x, identity);
-#y = calculate_values(x, linear);
-y = calculate_values(x, quadratic);
-
-plot(x, y);
-
-function bubbleSort(array: Array) {
-    n = array.size();
-    for (i in range(0, n-1)) {
-        for (j in range(0, n-(i+1))) {
-            if (array[j] > array[j+1]) {
-                temp = array[j];
-                array[j] = array[j+1];
-                array[j+1] = temp;
-            }
-        }
-    }
-    return array;
-}
-
-array = bubbleSort([1, 3, 2, 1, 2, 7, 5, 9, 10, 2]);
-print(array);
-# bubbleSort(123);
-
-function fibonacci_recursive(n: Number) : Number {
-    if (n <= 1) {
-        return n;
-    } else {
-        return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2);
-    }
-}
-
-result_recursive = [];
-for (i in range(0, 10)) {
-    result_recursive = result_recursive + [fibonacci_recursive(i)];
-}
-
-print(result_recursive);
-
-v = vec.new(0,0);
-v.print();
+print(c);

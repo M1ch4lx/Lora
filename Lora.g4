@@ -51,6 +51,8 @@ INTEND: '\t';
 
 ID : [a-zA-Z_][a-zA-Z0-9_]* ;
 
+DOT_PY : '.py' ;
+
 WS : [ \t\r\n]+ -> skip ;
 COMMENT : '#' ~[\r\n]* -> skip ;
 
@@ -58,7 +60,7 @@ program : (import_statement SEMI)* (statement | function_declaration)+ ;
 
 alias : AS ID ;
 
-import_statement : IMPORT ID alias? ;
+import_statement : IMPORT ID DOT_PY? alias? ;
 
 typed_variable : ID COLON ID ;
 

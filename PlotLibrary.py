@@ -44,6 +44,10 @@ class NumpyArray:
     def to_list(array: np.ndarray):
         return array.tolist()
 
+    @export
+    def dot(array: np.ndarray, other: np.ndarray):
+        return array.dot(other)
+
 
 class Animation:
     def __init__(self):
@@ -51,9 +55,10 @@ class Animation:
         self.current_frame_data = []
         self.vector_count = None
         self.anchor = [0, 0]
+        self.marker = 'blue'
 
     def add_vector_state(self, x, y):
-        self.current_frame_data.append(([x, y], self.anchor))
+        self.current_frame_data.append(([x, y], self.anchor, self.marker))
 
     def save_frame(self):
         if self.vector_count is None:
@@ -63,7 +68,7 @@ class Animation:
         self.frames.append(self.current_frame_data)
         self.current_frame_data = []
 
-    def vector_scatter(self, vector, anchor=None):
+    def vector_scatter(self, vector, anchor=None, color='blue'):
         def normalized(v):
             norm = np.linalg.norm(v)
             if norm == 0:
@@ -87,14 +92,14 @@ class Animation:
             triangle[i] = p + (normalized(arrow_end) * (norm - h))
             triangle[i] += anchor
         return [go.Scatter(x=[anchor[0], anchor[0] + x], y=[anchor[1], anchor[1] + y], mode='lines',
-                           line=dict(color='blue')),
+                           line=dict(color=color)),
                 go.Scatter(x=[v[0] for v in triangle], y=[v[1] for v in triangle], fill="toself", mode='lines',
-                           line=dict(color='blue'))]
+                           line=dict(color=color))]
 
     def frame_to_scatter_plot(self, frame):
         scatters = []
-        for vec, anchor in frame:
-            scatters += self.vector_scatter(vec, anchor)
+        for vec, anchor, color in frame:
+            scatters += self.vector_scatter(vec, anchor, color)
         return scatters
 
     def play(self):
@@ -135,8 +140,16 @@ class AnimationPrototype:
         animation.anchor = [x, y]
 
     @export
+    def set_marker_color(animation: Animation, color: str):
+        animation.marker = color
+
+    @export
     def vector(animation: Animation, x: float, y: float):
         animation.add_vector_state(x, y)
+
+    @export
+    def vector_array(animation: Animation, vectors: np.ndarray):
+        pass
 
     @export
     def play(animation: Animation):

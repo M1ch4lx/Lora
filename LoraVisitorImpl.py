@@ -13,6 +13,7 @@ from Function import *
 from Context import *
 from Variable import *
 from ActionStack import *
+import importlib
 
 
 class StopExecution(Exception):
@@ -47,6 +48,14 @@ class LoraVisitorImpl(LoraVisitor):
     # Visit a parse tree produced by LoraParser#import_statement.
     def visitImport_statement(self, ctx: LoraParser.Import_statementContext):
         module_name = ctx.ID().getText()
+
+        if ctx.DOT_PY():
+            if ctx.alias():
+                raise Exception('Alias not allowed when importing python module')
+            python_module = importlib.import_module(module_name)
+            self.lora.import_library(python_module)
+            return
+
         alias = module_name
         if ctx.alias():
             alias = self.visit(ctx.alias())

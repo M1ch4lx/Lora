@@ -3,6 +3,25 @@ from Object import *
 from typing import Callable
 
 
+lora = None
+
+
+def lora_function(name=None):
+    def lora_function_proper(func):
+        def wrapper(*args, **kwargs):
+            if len(kwargs) != 0:
+                raise Exception('Only positional parameters are allowed when calling lora function')
+            return lora.call_function_by_name(func.__name__ if name is None else name, list(args))
+        return wrapper
+
+    if callable(name):
+        callback = name
+        name = None
+        return lora_function_proper(callback)
+
+    return lora_function_proper
+
+
 def export(name=None):
     if callable(name):
         name.export = True
